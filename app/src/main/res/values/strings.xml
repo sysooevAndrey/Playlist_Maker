@@ -7,4 +7,5 @@
     <string name="title_link">Поделиться приложением</string>
     <string name="title_help">Написать в поддержку</string>
     <string name="title_user_agreement">Пользовательское соглашение</string>
+    <string name="message_not_yet_implemented">Простите, еще работаем над этим.</string>
 </resources>
