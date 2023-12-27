@@ -1,177 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    xmlns:tools="http://schemas.android.com/tools"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="visible"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/medium_padding"
+    android:paddingRight="@dimen/small_padding">
 
-    <LinearLayout
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="12dp">
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/back_icon"
+        app:title="@string/title_setting"
+        app:titleTextColor="@color/black" />
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <Switch
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="4dp">
-
-                <ImageButton
-                    android:id="@+id/back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+        android:id="@+id/dark_theme_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="24dp"
+        android:paddingVertical="21dp"
+        android:text="@string/title_dark_theme"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size" />
 
 
-                    android:background="@drawable/back_icon" />
-            </FrameLayout>
+    <TextView
+        android:id="@+id/link_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/large_padding"
+        android:text="@string/title_link"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size"
+        app:drawableEndCompat="@drawable/link_icon" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="12dp"
+    <TextView
+        android:id="@+id/help_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/large_padding"
+        android:text="@string/title_help"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size"
+        app:drawableEndCompat="@drawable/help_icon" />
 
-                android:text="@string/title_setting"
-                android:textColor="@color/black"
-                android:textSize="26sp" />
-
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingVertical="21dp"
-
-                android:text="@string/title_dark_theme"
-                android:textColor="@color/black"
-                android:textSize="19sp" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right">
-
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical">
-
-                </Switch>
-            </FrameLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/user_agreement_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/large_padding"
+        android:text="@string/title_user_agreement"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size"
+        app:drawableEndCompat="@drawable/forward_icon" />
 
 
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-
-                android:paddingTop="19dp"
-                android:paddingBottom="18dp"
-                android:text="@string/title_link"
-                android:textColor="@color/black"
-                android:textSize="19sp" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-
-                    android:background="@drawable/link_icon" />
-            </FrameLayout>
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+</LinearLayout>
 
 
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-
-                android:paddingTop="19dp"
-                android:paddingBottom="18dp"
-                android:text="@string/title_help"
-                android:textColor="@color/black"
-                android:textSize="19sp" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-
-                    android:background="@drawable/help_icon" />
-            </FrameLayout>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-
-                android:paddingTop="19dp"
-                android:paddingBottom="18dp"
-                android:text="@string/title_user_agreement"
-                android:textColor="@color/black"
-                android:textSize="19sp" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-
-                    android:background="@drawable/forward_icon" />
-            </FrameLayout>
-
-        </FrameLayout>
-    </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
