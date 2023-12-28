@@ -13,9 +13,9 @@ class SettingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val backButton = findViewById<Toolbar>(R.id.settings_toolbar)
+        val backButton = findViewById<ImageButton>(R.id.back)
 
-        backButton.setNavigationOnClickListener {
+        backButton.setOnClickListener {
             val displayIntent = Intent(this, MainActivity::class.java)
             startActivity(displayIntent)
         }
