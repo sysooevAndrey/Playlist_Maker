@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:forceDarkAllowed="false"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/medium_padding"
+    android:paddingRight="@dimen/small_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/back_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/small_padding"
+            android:text="@string/title_setting"
+            android:textColor="@color/black"
+            android:textSize="@dimen/headers_text_size" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingVertical="@dimen/large_padding"
+            android:text="@string/title_dark_theme"
+            android:textColor="@color/black"
+            android:textSize="@dimen/medium_text_size" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"></Switch>
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/link_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/large_padding"
+        android:text="@string/title_link"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size"
+        app:drawableEndCompat="@drawable/link_icon" />
+
+    <TextView
+        android:id="@+id/help_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/large_padding"
+        android:text="@string/title_help"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size"
+        app:drawableEndCompat="@drawable/help_icon" />
+
+    <TextView
+        android:id="@+id/user_agreement_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/large_padding"
+        android:text="@string/title_user_agreement"
+        android:textColor="@color/black"
+        android:textSize="@dimen/medium_text_size"
+        app:drawableEndCompat="@drawable/forward_icon" />
+
+
+</LinearLayout>
+
+
