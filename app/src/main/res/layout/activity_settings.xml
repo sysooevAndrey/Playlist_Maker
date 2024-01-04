@@ -3,19 +3,20 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:forceDarkAllowed="false"
+    android:background="?attr/colorOnPrimary"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/medium_padding"
-    android:paddingRight="@dimen/small_padding">
+    android:paddingHorizontal="@dimen/medium_padding"
+    tools:context=".SettingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,14 +24,12 @@
             android:background="@drawable/back_icon" />
 
         <TextView
+            style="@style/HeaderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/small_padding"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="@dimen/small_padding"
             android:text="@string/title_setting"
-            android:textColor="@color/black"
-            android:textSize="@dimen/headers_text_size" />
+            android:textColor="?attr/colorOnSecondary" />
     </LinearLayout>
 
     <FrameLayout
@@ -38,50 +37,86 @@
         android:layout_height="wrap_content">
 
         <TextView
+            style="@style/UsualTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingVertical="@dimen/large_padding"
-            android:text="@string/title_dark_theme"
-            android:textColor="@color/black"
-            android:textSize="@dimen/medium_text_size" />
+            android:text="@string/title_dark_theme" />
 
-        <Switch
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"></Switch>
+            android:layout_gravity="right"
+            app:thumbTint="@color/grey"
+            app:trackTint="@color/light_grey">
+
+        </com.google.android.material.switchmaterial.SwitchMaterial>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/UsualTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_link" />
+
+        <ImageView
+            android:id="@+id/link_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginVertical="@dimen/large_padding"
+            android:background="@drawable/link_icon" />
 
     </FrameLayout>
 
 
-    <TextView
-        android:id="@+id/link_line"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/large_padding"
-        android:text="@string/title_link"
-        android:textColor="@color/black"
-        android:textSize="@dimen/medium_text_size"
-        app:drawableEndCompat="@drawable/link_icon" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/help_line"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/large_padding"
-        android:text="@string/title_help"
-        android:textColor="@color/black"
-        android:textSize="@dimen/medium_text_size"
-        app:drawableEndCompat="@drawable/help_icon" />
+        <TextView
+            style="@style/UsualTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_help" />
 
-    <TextView
-        android:id="@+id/user_agreement_line"
+        <ImageView
+            android:id="@+id/help_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginVertical="@dimen/large_padding"
+            android:background="@drawable/help_icon" />
+
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/large_padding"
-        android:text="@string/title_user_agreement"
-        android:textColor="@color/black"
-        android:textSize="@dimen/medium_text_size"
-        app:drawableEndCompat="@drawable/forward_icon" />
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/UsualTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_user_agreement" />
+
+        <ImageView
+            android:id="@+id/user_agreement_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginVertical="@dimen/large_padding"
+            android:background="@drawable/forward_icon" />
+
+    </FrameLayout>
 
 
 </LinearLayout>

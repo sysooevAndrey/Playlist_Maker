@@ -2,9 +2,10 @@
 <resources>
     <dimen name="small_padding">12dp</dimen>
     <dimen name="medium_padding">16dp</dimen>
-    <dimen name="large_padding">21dp</dimen>
+    <dimen name="large_padding">20dp</dimen>
+    <dimen name="Xlarge_padding">40dp</dimen>
     <dimen name="small_text_size">12sp</dimen>
-    <dimen name="medium_text_size">19sp</dimen>
+    <dimen name="medium_text_size">20sp</dimen>
     <dimen name="headers_text_size">26sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
 </resources>
