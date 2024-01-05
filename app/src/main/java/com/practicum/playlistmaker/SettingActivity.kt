@@ -27,8 +27,7 @@ class SettingActivity : AppCompatActivity() {
 
 
         backButton.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
-            startActivity(displayIntent)
+            this.finish()
         }
 
         helpLine.setOnClickListener {
