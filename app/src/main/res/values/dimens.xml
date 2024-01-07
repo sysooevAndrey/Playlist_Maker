@@ -5,7 +5,8 @@
     <dimen name="large_padding">20dp</dimen>
     <dimen name="Xlarge_padding">40dp</dimen>
     <dimen name="small_text_size">12sp</dimen>
-    <dimen name="medium_text_size">20sp</dimen>
+    <dimen name="medium_text_size">16sp</dimen>
+    <dimen name="large_text_size">20sp</dimen>
     <dimen name="headers_text_size">26sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
 </resources>

@@ -58,7 +58,7 @@
             android:textColor="?attr/colorSecondaryVariant"
             android:textColorHint="?attr/colorSecondaryVariant"
             android:textFontWeight="400"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/large_text_size"
             />
 
         <ImageView
