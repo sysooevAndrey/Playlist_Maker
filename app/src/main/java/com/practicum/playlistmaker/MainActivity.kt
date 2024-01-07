@@ -3,8 +3,6 @@ package com.practicum.playlistmaker
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
@@ -12,12 +10,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         val searchButton = findViewById<MaterialButton>(R.id.search)
         val mediaButton = findViewById<MaterialButton>(R.id.media)
         val settingButton = findViewById<MaterialButton>(R.id.settings)
-
-
 
         searchButton.setOnClickListener {
             val displayIntent = Intent(this,SearchActivity::class.java)
@@ -31,7 +26,5 @@ class MainActivity : AppCompatActivity() {
             val displayIntent = Intent(this,SettingActivity::class.java)
             startActivity(displayIntent)
         }
-
     }
-
 }
