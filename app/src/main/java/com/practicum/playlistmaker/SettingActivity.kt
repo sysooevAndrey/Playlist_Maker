@@ -1,24 +1,25 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
+import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        Action.backButton<ImageView>(
-            this, R.id.back
-        )
-        Action.dataTransferButton<ImageView>(
-            this, R.id.help_button, DataIntent.MAIL
-        )
-        Action.dataTransferButton<ImageView>(
-            this, R.id.link_button, DataIntent.MESSAGE
-        )
-        Action.dataTransferButton<ImageView>(
-            this, R.id.user_agreement_button, DataIntent.USER_AGREEMENT
-        )
+
+        val backButton = findViewById<ImageButton>(R.id.back)
+
+        backButton.setOnClickListener {
+            val displayIntent = Intent(this, MainActivity::class.java)
+            startActivity(displayIntent)
+        }
+
+
     }
 }
