@@ -16,7 +16,7 @@
         <item name="iconPadding">@dimen/icon_padding</item>
         <item name="iconTint">@color/black</item>
         <item name="fontFamily">@font/ys_text_medium</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight">@integer/header_font_weight</item>
     </style>
 
     <style name="HeaderTextStyle">
@@ -24,7 +24,7 @@
         <item name="android:layout_marginBottom">@dimen/small_padding</item>
         <item name="android:textSize">@dimen/headers_text_size</item>
         <item name="fontFamily">@font/ys_text_medium</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight">@integer/header_font_weight</item>
     </style>
 
     <style name="UsualTextStyle">
@@ -32,6 +32,15 @@
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:paddingVertical">@dimen/large_padding</item>
         <item name="fontFamily">@font/ys_text_regular</item>
-        <item name="android:textFontWeight">400</item>
+        <item name="android:textFontWeight">@integer/text_font_weight</item>
+    </style>
+
+    <style name="TrackInfoText">
+        <item name="android:textFontWeight">@integer/text_font_weight</item>
+        <item name="fontFamily">@font/ys_text_regular</item>
+        <item name="android:textColor">?attr/colorIcon</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
     </style>
 </resources>
