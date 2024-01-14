@@ -19,7 +19,12 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackTime.text = track.trackTime
         Glide.with(itemView)
             .load(track.artworkUrl100)
-            .transform(RoundedCorners(2))
+            .transform(RoundedCorners(convertDpToPx(2)))
             .into(trackImage)
+    }
+
+    private fun convertDpToPx(dp: Int): Int {
+        val displayMetrics = itemView.resources.displayMetrics;
+        return ((dp * displayMetrics.density) + 0.5).toInt()
     }
 }
