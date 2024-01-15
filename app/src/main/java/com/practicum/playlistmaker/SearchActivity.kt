@@ -10,9 +10,9 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        Action.backButton<ImageView>(this, R.id.back)
+        NavigationButton.back<ImageView>(this, R.id.back)
         val searchEditText =
-            Action.search(this, R.id.search_edit_text, searchText)
+            Search.search(this, R.id.search_edit_text, searchText)
         searchText = searchEditText.text.toString()
 
         val searchRecyclerView = findViewById<RecyclerView>(R.id.search_recycler_view)
@@ -24,13 +24,13 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(Action.SEARCH_TEXT, searchText)
+        outState.putString(Search.SEARCH_TEXT, searchText)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(Action.SEARCH_TEXT, Action.SEARCH_TEXT_DEF)
+        searchText = savedInstanceState.getString(Search.SEARCH_TEXT, Search.SEARCH_TEXT_DEF)
     }
 
-    private var searchText: String = Action.SEARCH_TEXT_DEF
+    private var searchText: String = Search.SEARCH_TEXT_DEF
 }

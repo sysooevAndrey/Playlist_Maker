@@ -8,16 +8,16 @@ class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        Action.backButton<ImageView>(
+        NavigationButton.back<ImageView>(
             this, R.id.back
         )
-        Action.dataTransferButton<ImageView>(
+        DataTransferButton.button<ImageView>(
             this, R.id.help_button, DataIntent.MAIL
         )
-        Action.dataTransferButton<ImageView>(
+        DataTransferButton.button<ImageView>(
             this, R.id.link_button, DataIntent.MESSAGE
         )
-        Action.dataTransferButton<ImageView>(
+        DataTransferButton.button<ImageView>(
             this, R.id.user_agreement_button, DataIntent.USER_AGREEMENT
         )
     }

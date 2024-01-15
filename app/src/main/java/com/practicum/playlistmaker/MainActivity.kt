@@ -8,13 +8,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Action.navigationButton<MaterialButton, SearchActivity>(
+        NavigationButton.navigate<MaterialButton, SearchActivity>(
             this, R.id.search, SearchActivity::class.java
         )
-        Action.navigationButton<MaterialButton, MediaActivity>(
+        NavigationButton.navigate<MaterialButton, MediaActivity>(
             this, R.id.media, MediaActivity::class.java
         )
-        Action.navigationButton<MaterialButton, SettingActivity>(
+        NavigationButton.navigate<MaterialButton, SettingActivity>(
             this, R.id.settings, SettingActivity::class.java
         )
     }
