@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/small_padding"
-            android:text="@string/title_setting"
+            android:text="@string/heading_setting"
             android:textColor="?attr/colorOnSecondary" />
     </LinearLayout>
 
@@ -41,7 +41,7 @@
             style="@style/UsualTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/title_dark_theme" />
+            android:text="@string/heading_dark_theme" />
 
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -64,7 +64,7 @@
             style="@style/UsualTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_link" />
+            android:text="@string/heading_link" />
 
         <ImageView
             android:id="@+id/link_button"
@@ -86,7 +86,7 @@
             style="@style/UsualTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_help" />
+            android:text="@string/heading_help" />
 
         <ImageView
             android:id="@+id/help_button"
@@ -107,7 +107,7 @@
             style="@style/UsualTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_user_agreement" />
+            android:text="@string/heading_user_agreement" />
 
         <ImageView
             android:id="@+id/user_agreement_button"

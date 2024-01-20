@@ -23,22 +23,22 @@
         style="@style/MainButtonStyle"
         android:layout_width="match_parent"
         android:layout_marginTop="24dp"
-        android:text="@string/title_search"
+        android:text="@string/heading_search"
         app:icon="@drawable/search_icon" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/media"
         style="@style/MainButtonStyle"
         android:layout_width="match_parent"
-        android:text="@string/title_media"
+        android:text="@string/heading_media"
         app:icon="@drawable/media_icon" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settings"
         style="@style/MainButtonStyle"
         android:layout_width="match_parent"
-        android:text="@string/title_setting"
-        app:icon="@drawable/search_icon" />
+        android:text="@string/heading_setting"
+        app:icon="@drawable/setting_icon" />
 
 
 </LinearLayout>
