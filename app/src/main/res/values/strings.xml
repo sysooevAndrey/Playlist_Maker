@@ -17,4 +17,8 @@
     <string name="type_message">application/octet-stream</string>
     <string name="title_message">share to:</string>
     <string name="title_mail">send to:</string>
+    <string name="network_error_heading">Проблемы со связью</string>
+    <string name="network_error_text">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="update_text">Обновить</string>
+    <string name="empty_text">Ничего не нашлось</string>
 </resources>

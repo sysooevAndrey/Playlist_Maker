@@ -10,7 +10,6 @@ class DataTransferButton {
         const val DATA_KEY: String = "DATA"
         const val TYPE_KEY: String = "TYPE"
         const val TITLE_KEY: String = "TITLE"
-
         fun <V : View> button(
             appCompatActivity: AppCompatActivity, id: Int, dataIntent: DataIntent
         ): V {
