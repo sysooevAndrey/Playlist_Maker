@@ -70,83 +70,53 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/placeholder_empty"
+    <FrameLayout
+        android:id="@+id/placeholder_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="102dp"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:visibility="gone">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/placeholder_empty" />
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="16dp"
-            android:fontFamily="@font/ys_display_medium"
-            android:text="@string/empty_text"
-            android:textColor="?attr/colorOnSecondary"
-            android:textSize="@dimen/large_text_size" />
+            <ImageView
+                android:id="@+id/placeholder_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
 
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/placeholder_network"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="102dp"
-        android:orientation="vertical"
-        android:visibility="gone">
+            <TextView
+                android:id="@+id/placeholder_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="16dp"
+                android:fontFamily="@font/ys_display_medium"
+                android:gravity="center_horizontal"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="@dimen/large_text_size" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/placeholder_network" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/update_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="24dp"
+                android:backgroundTint="?attr/colorOnSecondary"
+                android:fontFamily="@font/ys_text_medium"
+                android:insetBottom="0dp"
+                android:text="@string/update_text"
+                android:textAllCaps="false"
+                android:textColor="?attr/colorOnPrimary"
+                android:textFontWeight="@integer/text_font_weight"
+                app:cornerRadius="54dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="16dp"
-            android:fontFamily="@font/ys_display_medium"
-            android:text="@string/network_error_heading"
-            android:textColor="?attr/colorOnSecondary"
-            android:textSize="@dimen/large_text_size" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="16dp"
-            android:fontFamily="@font/ys_display_medium"
-            android:gravity="center_horizontal"
-            android:text="@string/network_error_text"
-            android:textColor="?attr/colorOnSecondary"
-            android:textSize="@dimen/large_text_size" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/update_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="24dp"
-            android:backgroundTint="?attr/colorOnSecondary"
-            android:fontFamily="@font/ys_text_medium"
-            android:insetBottom="0dp"
-            android:text="@string/update_text"
-            android:textAllCaps="false"
-            android:textColor="?attr/colorOnPrimary"
-            android:textFontWeight="@integer/text_font_weight"
-            app:cornerRadius="54dp" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"
