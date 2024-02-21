@@ -15,7 +15,7 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_marginVertical="@dimen/icon_padding"
-            android:layout_marginRight="@dimen/icon_padding"
+            android:layout_marginEnd="@dimen/icon_padding"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder" />
 
@@ -29,11 +29,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:layout_marginTop="@dimen/track_info_padding"
+                android:ellipsize="end"
                 android:fontFamily="@font/ys_text_regular"
+                android:maxEms="15"
+                android:maxLines="1"
                 android:textColor="?attr/colorOnSecondary"
                 android:textFontWeight="400"
                 android:textSize="@dimen/medium_text_size"
-                tools:text="Track nameTrack nameTrack name" />
+                tools:text="Track nameTrack nameTrack nameTrack nameTrack name" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,7 +47,10 @@
                 <TextView
                     android:id="@+id/artist_name"
                     style="@style/TrackInfoText"
-                    tools:text="Artist name" />
+                    android:ellipsize="end"
+                    android:maxEms="15"
+                    android:maxLines="1"
+                    tools:text="Artist nameArtist nameArtist nameArtist name" />
 
                 <ImageView
                     android:layout_width="wrap_content"
