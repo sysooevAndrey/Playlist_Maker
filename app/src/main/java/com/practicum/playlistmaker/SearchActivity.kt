@@ -30,6 +30,8 @@ class SearchActivity : AppCompatActivity() {
 
     private val trackList = ArrayList<TrackResponse.Track>()
 
+    private val searchHistoryList = ArrayList<TrackResponse.Track>()
+
     private var searchText: String = SEARCH_TEXT_DEF
 
     private val retrofit = Retrofit.Builder()
@@ -57,9 +59,17 @@ class SearchActivity : AppCompatActivity() {
 
         val searchEditText = findViewById<EditText>(R.id.search_edit_text)
 
-        NavigationButton.back<ImageView>(this, R.id.back)
+        val clearHistoryButton = findViewById<MaterialButton>(R.id.clear_history_button)
 
-        val trackAdapter = TrackAdapter(trackList)
+        val searchHistoryTextView = findViewById<TextView>(R.id.search_history_header)
+
+        val searchRecyclerView = findViewById<RecyclerView>(R.id.search_recycler_view)
+
+        val trackAdapter = TrackAdapter(trackList, searchHistoryList)
+
+        val searchHistoryAdapter = TrackAdapter(trackList, searchHistoryList)
+
+        NavigationButton.back<ImageView>(this, R.id.back)
 
         searchEditText.setText(searchText)
 
@@ -148,6 +158,15 @@ class SearchActivity : AppCompatActivity() {
             ) {
                 clearButton.isVisible = clearButtonVisibility(s)
                 searchText = s.toString()
+                if (searchEditText.hasFocus() && searchEditText.text.isEmpty()) {
+                    searchRecyclerView.adapter = searchHistoryAdapter
+                    clearHistoryButton.isVisible = true
+                    searchHistoryTextView.isVisible = true
+                } else {
+                    searchRecyclerView.adapter = trackAdapter
+                    clearHistoryButton.isVisible = false
+                    searchHistoryTextView.isVisible = false
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -162,9 +181,17 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-        val searchRecyclerView = findViewById<RecyclerView>(R.id.search_recycler_view)
-
-        searchRecyclerView.adapter = trackAdapter
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchEditText.text.isEmpty()) {
+                searchRecyclerView.adapter = searchHistoryAdapter
+                clearHistoryButton.isVisible = true
+                searchHistoryTextView.isVisible = true
+            } else {
+                searchRecyclerView.adapter = trackAdapter
+                clearHistoryButton.isVisible = false
+                searchHistoryTextView.isVisible = false
+            }
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {

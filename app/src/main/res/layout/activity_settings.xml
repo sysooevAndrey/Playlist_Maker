@@ -27,7 +27,7 @@
             style="@style/HeaderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_marginStart="@dimen/small_padding"
             android:text="@string/heading_setting"
             android:textColor="?attr/colorOnSecondary" />
     </LinearLayout>
@@ -45,9 +45,10 @@
 
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/theme_switcher"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             app:thumbTint="@color/grey"
             app:trackTint="@color/light_grey">
 
