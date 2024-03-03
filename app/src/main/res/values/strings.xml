@@ -20,4 +20,6 @@
     <string name="network_error_text">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="update_text">Обновить</string>
     <string name="empty_text">Ничего не нашлось</string>
+    <string name="clear_history_text">Очистить историю</string>
+    <string name="search_history_header">Вы искали</string>
 </resources>

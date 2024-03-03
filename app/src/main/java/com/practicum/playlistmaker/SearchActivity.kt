@@ -15,6 +15,8 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,9 +28,9 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT_DEF: String = ""
         private const val BASE_URL: String = "https://itunes.apple.com"
+        val trackList = ArrayList<TrackResponse.Track>()
+        val searchHistoryList = ArrayList<TrackResponse.Track>()
     }
-
-    private val trackList = ArrayList<TrackResponse.Track>()
 
     private var searchText: String = SEARCH_TEXT_DEF
 
@@ -45,6 +47,21 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val sharedPrefs = getSharedPreferences(App.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+
+        val type = object : TypeToken<ArrayList<TrackResponse.Track>>() {}.type
+
+        val json = sharedPrefs.getString(App.SEARCH_HISTORY_KEY, null)
+
+        if (!json.isNullOrEmpty()) {
+            searchHistoryList.addAll(
+                Gson().fromJson(
+                    json,
+                    type
+                )
+            )
+        }
+
         val placeholderSearch = findViewById<FrameLayout>(R.id.placeholder_view)
 
         val placeholderSearchImageView = findViewById<ImageView>(R.id.placeholder_image)
@@ -57,9 +74,17 @@ class SearchActivity : AppCompatActivity() {
 
         val searchEditText = findViewById<EditText>(R.id.search_edit_text)
 
-        NavigationButton.back<ImageView>(this, R.id.back)
+        val clearHistoryButton = findViewById<MaterialButton>(R.id.clear_history_button)
 
-        val trackAdapter = TrackAdapter(trackList)
+        val searchHistoryTextView = findViewById<TextView>(R.id.search_history_header)
+
+        val searchRecyclerView = findViewById<RecyclerView>(R.id.search_recycler_view)
+
+        val trackListAdapter = TrackListAdapter(trackList)
+
+        val searchHistoryAdapter = HistoryTrackListAdapter(searchHistoryList)
+
+        NavigationButton.back<ImageView>(this, R.id.back)
 
         searchEditText.setText(searchText)
 
@@ -98,7 +123,7 @@ class SearchActivity : AppCompatActivity() {
                     ) {
                         if (response.code() == 200) {
                             trackList.addAll(response.body()?.results!!)
-                            trackAdapter.notifyDataSetChanged()
+                            trackListAdapter.notifyDataSetChanged()
                             if (trackList.isEmpty()) {
                                 placeholderVisibility(SearchStatus.NOT_FOUND)
                             }
@@ -117,14 +142,26 @@ class SearchActivity : AppCompatActivity() {
             true
         }
 
-        updateButton.setOnClickListener() {
+        fun historyListItemVisibility(hasFocus: Boolean) {
+            if (hasFocus && searchEditText.text.isEmpty() && searchHistoryList.isNotEmpty()) {
+                searchRecyclerView.adapter = searchHistoryAdapter
+                clearHistoryButton.isVisible = true
+                searchHistoryTextView.isVisible = true
+            } else {
+                searchRecyclerView.adapter = trackListAdapter
+                clearHistoryButton.isVisible = false
+                searchHistoryTextView.isVisible = false
+            }
+        }
+
+        updateButton.setOnClickListener {
             createRequest()
         }
 
         clearButton.setOnClickListener {
             searchEditText.setText(SEARCH_TEXT_DEF)
             trackList.clear()
-            trackAdapter.notifyDataSetChanged()
+            trackListAdapter.notifyDataSetChanged()
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager
@@ -148,6 +185,7 @@ class SearchActivity : AppCompatActivity() {
             ) {
                 clearButton.isVisible = clearButtonVisibility(s)
                 searchText = s.toString()
+                historyListItemVisibility(searchEditText.hasFocus())
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -162,13 +200,25 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-        val searchRecyclerView = findViewById<RecyclerView>(R.id.search_recycler_view)
-
-        searchRecyclerView.adapter = trackAdapter
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            historyListItemVisibility(hasFocus)
+        }
+        clearHistoryButton.setOnClickListener {
+            searchHistoryList.clear()
+            historyListItemVisibility(searchEditText.hasFocus())
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
         return !s.isNullOrEmpty()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val sharedPrefs = getSharedPreferences(App.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        sharedPrefs.edit()
+            .putString(App.SEARCH_HISTORY_KEY, Gson().toJson(searchHistoryList))
+            .apply()
     }
 }
 

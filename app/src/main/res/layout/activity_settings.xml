@@ -14,20 +14,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/back_icon" />
+            android:background="@drawable/back_icon"
+            tools:ignore="ContentDescription" />
 
         <TextView
             style="@style/HeaderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_marginStart="@dimen/small_padding"
             android:text="@string/heading_setting"
             android:textColor="?attr/colorOnSecondary" />
     </LinearLayout>
@@ -45,9 +47,10 @@
 
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/theme_switcher"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             app:thumbTint="@color/grey"
             app:trackTint="@color/light_grey">
 
@@ -70,9 +73,10 @@
             android:id="@+id/link_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginVertical="@dimen/large_padding"
-            android:background="@drawable/link_icon" />
+            android:background="@drawable/link_icon"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
@@ -92,9 +96,10 @@
             android:id="@+id/help_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginVertical="@dimen/large_padding"
-            android:background="@drawable/help_icon" />
+            android:background="@drawable/help_icon"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
@@ -113,9 +118,10 @@
             android:id="@+id/user_agreement_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginVertical="@dimen/large_padding"
-            android:background="@drawable/forward_icon" />
+            android:background="@drawable/forward_icon"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
