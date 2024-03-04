@@ -42,6 +42,29 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesSearchService: ITunesApi =
         retrofit.create(ITunesApi::class.java)
 
+    private lateinit var placeholderSearch: FrameLayout
+
+    private lateinit var placeholderSearchImageView: ImageView
+
+    private lateinit var placeholderSearchTextView: TextView
+
+    private lateinit var updateButton: MaterialButton
+
+    private lateinit var clearButton: ImageView
+
+    private lateinit var searchEditText: EditText
+
+    private lateinit var clearHistoryButton: MaterialButton
+
+    private lateinit var searchHistoryTextView: TextView
+
+    private lateinit var searchRecyclerView: RecyclerView
+
+    private val trackListAdapter = TrackListAdapter(trackList)
+
+    private val searchHistoryAdapter = HistoryTrackListAdapter(searchHistoryList)
+
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +76,8 @@ class SearchActivity : AppCompatActivity() {
 
         val json = sharedPrefs.getString(App.SEARCH_HISTORY_KEY, null)
 
+        searchHistoryList.clear()
+
         if (!json.isNullOrEmpty()) {
             searchHistoryList.addAll(
                 Gson().fromJson(
@@ -62,97 +87,27 @@ class SearchActivity : AppCompatActivity() {
             )
         }
 
-        val placeholderSearch = findViewById<FrameLayout>(R.id.placeholder_view)
+        placeholderSearch = findViewById(R.id.placeholder_view)
 
-        val placeholderSearchImageView = findViewById<ImageView>(R.id.placeholder_image)
+        placeholderSearchImageView = findViewById(R.id.placeholder_image)
 
-        val placeholderSearchTextView = findViewById<TextView>(R.id.placeholder_text)
+        placeholderSearchTextView = findViewById(R.id.placeholder_text)
 
-        val updateButton = findViewById<MaterialButton>(R.id.update_button)
+        updateButton = findViewById(R.id.update_button)
 
-        val clearButton = findViewById<ImageView>(R.id.clear_text)
+        clearButton = findViewById(R.id.clear_text)
 
-        val searchEditText = findViewById<EditText>(R.id.search_edit_text)
+        searchEditText = findViewById(R.id.search_edit_text)
 
-        val clearHistoryButton = findViewById<MaterialButton>(R.id.clear_history_button)
+        clearHistoryButton = findViewById(R.id.clear_history_button)
 
-        val searchHistoryTextView = findViewById<TextView>(R.id.search_history_header)
+        searchHistoryTextView = findViewById(R.id.search_history_header)
 
-        val searchRecyclerView = findViewById<RecyclerView>(R.id.search_recycler_view)
-
-        val trackListAdapter = TrackListAdapter(trackList)
-
-        val searchHistoryAdapter = HistoryTrackListAdapter(searchHistoryList)
+        searchRecyclerView = findViewById(R.id.search_recycler_view)
 
         NavigationButton.back<ImageView>(this, R.id.back)
 
         searchEditText.setText(searchText)
-
-        fun placeholderVisibility(searchStatus: SearchStatus) {
-            when (searchStatus) {
-                SearchStatus.SUCCESS -> {
-                    placeholderSearch.isVisible = false
-                }
-
-                SearchStatus.NOT_FOUND -> {
-                    placeholderSearchImageView.setImageResource(R.drawable.placeholder_empty)
-                    placeholderSearchTextView.setText(R.string.empty_text)
-                    placeholderSearch.isVisible = true
-                    updateButton.isVisible = false
-                }
-
-                SearchStatus.NO_NETWORK -> {
-                    placeholderSearchImageView.setImageResource(R.drawable.placeholder_network)
-                    placeholderSearchTextView.setText(R.string.network_error_text)
-                    placeholderSearch.isVisible = true
-                    updateButton.isVisible = true
-                }
-            }
-        }
-
-        fun createRequest() {
-            trackList.clear()
-            placeholderSearch.isVisible = false
-            iTunesSearchService
-                .search(searchText)
-                .enqueue(object : Callback<TrackResponse> {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onResponse(
-                        call: Call<TrackResponse>,
-                        response: Response<TrackResponse>
-                    ) {
-                        if (response.code() == 200) {
-                            trackList.addAll(response.body()?.results!!)
-                            trackListAdapter.notifyDataSetChanged()
-                            if (trackList.isEmpty()) {
-                                placeholderVisibility(SearchStatus.NOT_FOUND)
-                            }
-                        } else {
-                            placeholderVisibility(SearchStatus.NO_NETWORK)
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<TrackResponse>,
-                        t: Throwable
-                    ) {
-                        placeholderVisibility(SearchStatus.NO_NETWORK)
-                    }
-                })
-            true
-        }
-
-        fun historyListItemVisibility(hasFocus: Boolean) {
-            if (hasFocus && searchEditText.text.isEmpty() && searchHistoryList.isNotEmpty()) {
-                searchRecyclerView.adapter = searchHistoryAdapter
-                clearHistoryButton.isVisible = true
-                searchHistoryTextView.isVisible = true
-            } else {
-                searchRecyclerView.adapter = trackListAdapter
-                clearHistoryButton.isVisible = false
-                searchHistoryTextView.isVisible = false
-            }
-        }
 
         updateButton.setOnClickListener {
             createRequest()
@@ -219,6 +174,72 @@ class SearchActivity : AppCompatActivity() {
         sharedPrefs.edit()
             .putString(App.SEARCH_HISTORY_KEY, Gson().toJson(searchHistoryList))
             .apply()
+    }
+
+    private fun placeholderVisibility(searchStatus: SearchStatus) {
+        when (searchStatus) {
+            SearchStatus.SUCCESS -> {
+                placeholderSearch.isVisible = false
+            }
+
+            SearchStatus.NOT_FOUND -> {
+                placeholderSearchImageView.setImageResource(R.drawable.placeholder_empty)
+                placeholderSearchTextView.setText(R.string.empty_text)
+                placeholderSearch.isVisible = true
+                updateButton.isVisible = false
+            }
+
+            SearchStatus.NO_NETWORK -> {
+                placeholderSearchImageView.setImageResource(R.drawable.placeholder_network)
+                placeholderSearchTextView.setText(R.string.network_error_text)
+                placeholderSearch.isVisible = true
+                updateButton.isVisible = true
+            }
+        }
+    }
+
+    private fun createRequest() {
+        trackList.clear()
+        placeholderSearch.isVisible = false
+        iTunesSearchService
+            .search(searchText)
+            .enqueue(object : Callback<TrackResponse> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(
+                    call: Call<TrackResponse>,
+                    response: Response<TrackResponse>
+                ) {
+                    if (response.code() == 200) {
+                        trackList.addAll(response.body()?.results!!)
+                        trackListAdapter.notifyDataSetChanged()
+                        if (trackList.isEmpty()) {
+                            placeholderVisibility(SearchStatus.NOT_FOUND)
+                        }
+                    } else {
+                        placeholderVisibility(SearchStatus.NO_NETWORK)
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<TrackResponse>,
+                    t: Throwable
+                ) {
+                    placeholderVisibility(SearchStatus.NO_NETWORK)
+                }
+            })
+        true
+    }
+
+    private fun historyListItemVisibility(hasFocus: Boolean) {
+        if (hasFocus && searchEditText.text.isEmpty() && searchHistoryList.isNotEmpty()) {
+            searchRecyclerView.adapter = searchHistoryAdapter
+            clearHistoryButton.isVisible = true
+            searchHistoryTextView.isVisible = true
+        } else {
+            searchRecyclerView.adapter = trackListAdapter
+            clearHistoryButton.isVisible = false
+            searchHistoryTextView.isVisible = false
+        }
     }
 }
 

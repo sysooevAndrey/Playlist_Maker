@@ -19,12 +19,14 @@ class App : Application() {
         val sharedPrefs =
             getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         darkTheme = sharedPrefs.getBoolean(APP_THEME_KEY, DARK_APP_THEME_DEFAULT)
+        switchTheme(darkTheme)
     }
+
 
     fun switchTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled
         AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) {
+            if (darkTheme) {
                 AppCompatDelegate.MODE_NIGHT_YES
             } else {
                 AppCompatDelegate.MODE_NIGHT_NO

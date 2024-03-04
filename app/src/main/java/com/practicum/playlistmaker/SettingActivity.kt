@@ -7,7 +7,6 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -19,12 +18,11 @@ class SettingActivity : AppCompatActivity() {
         themeSwitcher.isChecked =
             sharedPrefs.getBoolean(App.APP_THEME_KEY, App.DARK_APP_THEME_DEFAULT)
 
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            switcher.isChecked
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
             sharedPrefs.edit()
                 .putBoolean(App.APP_THEME_KEY, checked)
                 .apply()
-            (applicationContext as App).switchTheme(checked)
         }
 
         NavigationButton.back<ImageView>(
