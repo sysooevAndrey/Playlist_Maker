@@ -3,12 +3,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:foreground="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/track_image"
@@ -17,7 +19,8 @@
             android:layout_marginVertical="@dimen/icon_padding"
             android:layout_marginEnd="@dimen/icon_padding"
             android:scaleType="centerCrop"
-            android:src="@drawable/placeholder" />
+            android:src="@drawable/placeholder"
+            tools:ignore="ContentDescription" />
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -56,7 +59,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/dot_icon" />
+                    android:src="@drawable/dot_icon"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/track_time"
@@ -73,5 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginVertical="@dimen/track_icon_padding"
-        android:src="@drawable/forward_icon" />
+        android:src="@drawable/forward_icon"
+        tools:ignore="ContentDescription" />
 </FrameLayout>
