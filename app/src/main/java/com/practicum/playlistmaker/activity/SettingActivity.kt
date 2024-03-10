@@ -1,9 +1,13 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.button.DataIntent
+import com.practicum.playlistmaker.button.DataTransferButton
+import com.practicum.playlistmaker.button.NavigationButton
+import com.practicum.playlistmaker.R
 
 class SettingActivity : AppCompatActivity() {
 

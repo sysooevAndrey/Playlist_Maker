@@ -1,6 +1,7 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.api
 
 
+import com.practicum.playlistmaker.model.TrackResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
