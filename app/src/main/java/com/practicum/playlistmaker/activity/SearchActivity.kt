@@ -1,7 +1,8 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +18,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.api.ITunesApi
+import com.practicum.playlistmaker.button.NavigationButton
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.recyclerview.TrackListAdapter
+import com.practicum.playlistmaker.model.TrackResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,7 +68,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val trackListAdapter = TrackListAdapter(trackList)
 
-    private val searchHistoryAdapter = HistoryTrackListAdapter(searchHistoryList)
+    private val searchHistoryAdapter = TrackListAdapter(searchHistoryList)
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -162,6 +168,25 @@ class SearchActivity : AppCompatActivity() {
             searchHistoryList.clear()
             historyListItemVisibility(searchEditText.hasFocus())
         }
+
+        trackListAdapter.onItemClickListener = {
+            with(searchHistoryList) {
+                if (contains(it)) {
+                    remove(it)
+                    add(0, it)
+                } else if (size == 10) {
+                    removeLast()
+                    add(0, it)
+                } else {
+                    add(0, it)
+                }
+                trackListAdapter.notifyDataSetChanged()
+                openTrackActivity(it)
+            }
+        }
+        searchHistoryAdapter.onItemClickListener = {
+           openTrackActivity(it)
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
@@ -240,6 +265,15 @@ class SearchActivity : AppCompatActivity() {
             clearHistoryButton.isVisible = false
             searchHistoryTextView.isVisible = false
         }
+    }
+
+    private fun openTrackActivity(track: TrackResponse.Track) {
+        val displayIntent = Intent(this, PlayerActivity::class.java)
+        displayIntent.putExtra(
+            PlayerActivity.TRACK_KEY,
+            Gson().toJson(track).toString()
+        )
+        this.startActivity(displayIntent)
     }
 }
 

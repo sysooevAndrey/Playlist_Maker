@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/medium_padding"
     android:paddingBottom="28dp"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <TextView
         style="@style/HeaderTextStyle"
