@@ -73,6 +73,16 @@
             tools:ignore="ContentDescription" />
     </FrameLayout>
 
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        android:visibility="gone">
+
+
+    </ProgressBar>
     <FrameLayout
         android:id="@+id/placeholder_view"
         android:layout_width="match_parent"
