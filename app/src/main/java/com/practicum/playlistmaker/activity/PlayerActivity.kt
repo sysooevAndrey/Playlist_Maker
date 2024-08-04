@@ -24,7 +24,7 @@ class PlayerActivity : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        const val DELAY_TIME_MILLIS = 500L
+        const val DELAY_TIME_MILLIS = 100L
     }
 
     private lateinit var playButton: ImageView
@@ -39,11 +39,15 @@ class PlayerActivity : AppCompatActivity() {
 
     private var playerState = STATE_DEFAULT
 
+    private val updateCurrentTimeRunnable = updateCurrentTime()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
         mainHandler = Handler(Looper.getMainLooper())
+
 
         currentTime = findViewById(R.id.current_time)
 
@@ -93,21 +97,16 @@ class PlayerActivity : AppCompatActivity() {
             Looper.loop()
         }.start()
 
-
-
         preparePlayer()
 
         playButton.setOnClickListener {
-
             mediaThread.run {
                 val handler = Handler(Looper.myLooper()!!)
                 handler.post {
                     playerControl()
                 }
             }
-
         }
-
     }
 
     override fun onPause() {
@@ -117,8 +116,8 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mainHandler.removeCallbacks(updateCurrentTimeRunnable)
         mediaPlayer.release()
-        mainHandler.removeCallbacks(updateCurrentTimeRunnable())
 
     }
 
@@ -130,8 +129,12 @@ class PlayerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
+            mainHandler.removeCallbacks(updateCurrentTimeRunnable)
             playButton.setImageResource(R.drawable.play_icon)
             playerState = STATE_PREPARED
+            currentTime.text = SimpleDateFormat(
+                "mm:ss", Locale.getDefault()
+            ).format(0L)
         }
     }
 
@@ -149,25 +152,28 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun playerControl() {
         when (playerState) {
-            STATE_PLAYING -> pausePlayer()
+            STATE_PLAYING -> {
+                pausePlayer()
+                mainHandler.removeCallbacks(updateCurrentTimeRunnable)
+            }
+
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
-                Handler(Looper.getMainLooper()).postDelayed(
-                    updateCurrentTimeRunnable(), DELAY_TIME_MILLIS
+                mainHandler.postDelayed(
+                    updateCurrentTimeRunnable, DELAY_TIME_MILLIS
                 )
             }
         }
     }
 
-    private fun updateCurrentTimeRunnable(): Runnable {
-        return object : Runnable {
+    private fun updateCurrentTime(): Runnable {
+      return  object : Runnable {
             override fun run() {
-                currentTime.text = SimpleDateFormat(
-                    "mm:ss", Locale.getDefault()
-                ).format(mediaPlayer.currentPosition)
-                Handler(Looper.getMainLooper()).postDelayed(this, DELAY_TIME_MILLIS)
+                currentTime.text =
+                    SimpleDateFormat("mm:ss", Locale.getDefault())
+                        .format(mediaPlayer.currentPosition)
+                mainHandler.postDelayed(this, DELAY_TIME_MILLIS)
             }
         }
     }
-
 }

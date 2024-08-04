@@ -55,7 +55,7 @@
             android:paddingStart="@dimen/small_padding"
             android:paddingEnd="@dimen/Xlarge_padding"
             android:singleLine="true"
-            android:textColor="?attr/colorSecondaryVariant"
+            android:textColor="@color/black"
             android:textColorHint="?attr/colorSecondaryVariant"
             android:textFontWeight="400"
             android:textSize="@dimen/large_text_size"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:visibility="gone">
 
 
