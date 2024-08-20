@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
@@ -12,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -34,9 +37,12 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT_DEF: String = ""
         private const val BASE_URL: String = "https://itunes.apple.com"
+        private const val SEARCH_DEBOUNCE_DELAY: Long = 2000L
         val trackList = ArrayList<TrackResponse.Track>()
         val searchHistoryList = ArrayList<TrackResponse.Track>()
     }
+
+
 
     private var searchText: String = SEARCH_TEXT_DEF
 
@@ -66,32 +72,18 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchRecyclerView: RecyclerView
 
+    private lateinit var progressBar: ProgressBar
+
     private val trackListAdapter = TrackListAdapter(trackList)
 
     private val searchHistoryAdapter = TrackListAdapter(searchHistoryList)
-
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val sharedPrefs = getSharedPreferences(App.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-
-        val type = object : TypeToken<ArrayList<TrackResponse.Track>>() {}.type
-
-        val json = sharedPrefs.getString(App.SEARCH_HISTORY_KEY, null)
-
-        searchHistoryList.clear()
-
-        if (!json.isNullOrEmpty()) {
-            searchHistoryList.addAll(
-                Gson().fromJson(
-                    json,
-                    type
-                )
-            )
-        }
+        progressBar = findViewById(R.id.progress_circular)
 
         placeholderSearch = findViewById(R.id.placeholder_view)
 
@@ -112,6 +104,40 @@ class SearchActivity : AppCompatActivity() {
         searchRecyclerView = findViewById(R.id.search_recycler_view)
 
         NavigationButton.back<ImageView>(this, R.id.back)
+
+        val searchRunnable = Runnable { createRequest() }
+
+        val searchThread = Thread {
+            Looper.prepare()
+            Looper.loop()
+        }.start()
+
+        fun searchDebounce() {
+            searchThread.run {
+                val handler = Handler(Looper.myLooper()!!)
+                handler.removeCallbacks(searchRunnable)
+                handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+            }
+        }
+
+        val sharedPrefs = getSharedPreferences(App.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+
+        val type = object : TypeToken<ArrayList<TrackResponse.Track>>() {}.type
+
+        val json = sharedPrefs.getString(App.SEARCH_HISTORY_KEY, null)
+
+        searchHistoryList.clear()
+
+        if (!json.isNullOrEmpty()) {
+            searchHistoryList.addAll(
+                Gson().fromJson(
+                    json,
+                    type
+                )
+            )
+        }
+
+
 
         searchEditText.setText(searchText)
 
@@ -147,6 +173,7 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.isVisible = clearButtonVisibility(s)
                 searchText = s.toString()
                 historyListItemVisibility(searchEditText.hasFocus())
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -185,8 +212,9 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         searchHistoryAdapter.onItemClickListener = {
-           openTrackActivity(it)
+            openTrackActivity(it)
         }
+
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
@@ -205,6 +233,8 @@ class SearchActivity : AppCompatActivity() {
         when (searchStatus) {
             SearchStatus.SUCCESS -> {
                 placeholderSearch.isVisible = false
+                progressBar.isVisible = false
+
             }
 
             SearchStatus.NOT_FOUND -> {
@@ -212,6 +242,8 @@ class SearchActivity : AppCompatActivity() {
                 placeholderSearchTextView.setText(R.string.empty_text)
                 placeholderSearch.isVisible = true
                 updateButton.isVisible = false
+                progressBar.isVisible = false
+
             }
 
             SearchStatus.NO_NETWORK -> {
@@ -219,13 +251,21 @@ class SearchActivity : AppCompatActivity() {
                 placeholderSearchTextView.setText(R.string.network_error_text)
                 placeholderSearch.isVisible = true
                 updateButton.isVisible = true
+                progressBar.isVisible = false
+
+            }
+
+            SearchStatus.WAIT -> {
+                progressBar.isVisible = true
+                placeholderSearch.isVisible = false
+                updateButton.isVisible = false
             }
         }
     }
 
     private fun createRequest() {
         trackList.clear()
-        placeholderSearch.isVisible = false
+        placeholderVisibility(SearchStatus.WAIT)
         iTunesSearchService
             .search(searchText)
             .enqueue(object : Callback<TrackResponse> {
@@ -235,6 +275,7 @@ class SearchActivity : AppCompatActivity() {
                     response: Response<TrackResponse>
                 ) {
                     if (response.code() == 200) {
+                        placeholderVisibility(SearchStatus.SUCCESS)
                         trackList.addAll(response.body()?.results!!)
                         trackListAdapter.notifyDataSetChanged()
                         if (trackList.isEmpty()) {
@@ -275,5 +316,7 @@ class SearchActivity : AppCompatActivity() {
         )
         this.startActivity(displayIntent)
     }
+
+
 }
 
