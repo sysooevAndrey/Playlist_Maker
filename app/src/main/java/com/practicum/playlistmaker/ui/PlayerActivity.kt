@@ -1,5 +1,6 @@
-package com.practicum.playlistmaker.activity
+package com.practicum.playlistmaker.ui
 
+import Track
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,7 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.button.NavigationButton
-import com.practicum.playlistmaker.model.TrackResponse
+import com.practicum.playlistmaker.data.dto.TrackSearchResponse
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -33,7 +34,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var mediaPlayer: MediaPlayer
 
-    private lateinit var track: TrackResponse.Track
+    private lateinit var track: Track
 
     private lateinit var mainHandler: Handler
 
@@ -52,7 +53,7 @@ class PlayerActivity : AppCompatActivity() {
         currentTime = findViewById(R.id.current_time)
 
         track =
-            Gson().fromJson(intent.getStringExtra(TRACK_KEY), TrackResponse.Track::class.java)
+            Gson().fromJson(intent.getStringExtra(TRACK_KEY), Track::class.java)
 
         NavigationButton.back<ImageView>(this, R.id.back_button)
 
@@ -167,7 +168,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun updateCurrentTime(): Runnable {
-      return  object : Runnable {
+        return object : Runnable {
             override fun run() {
                 currentTime.text =
                     SimpleDateFormat("mm:ss", Locale.getDefault())

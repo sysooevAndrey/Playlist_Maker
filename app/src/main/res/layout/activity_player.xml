@@ -8,7 +8,7 @@
     android:paddingHorizontal="@dimen/medium_padding"
     android:paddingTop="@dimen/medium_padding"
     android:paddingBottom="20dp"
-    tools:context=".activity.PlayerActivity">
+    tools:context=".ui.PlayerActivity">
 
     <ImageView
         android:id="@+id/back_button"

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.activity
+package com.practicum.playlistmaker.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +8,7 @@ import com.practicum.playlistmaker.button.DataIntent
 import com.practicum.playlistmaker.button.DataTransferButton
 import com.practicum.playlistmaker.button.NavigationButton
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.dto.App
 
 class SettingActivity : AppCompatActivity() {
 
