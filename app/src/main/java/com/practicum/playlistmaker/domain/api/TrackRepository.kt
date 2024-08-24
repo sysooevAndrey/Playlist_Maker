@@ -1,7 +1,8 @@
 package com.practicum.playlistmaker.domain.api
 
-import Track
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.domain.models.Resource
 
 interface TrackRepository {
-    fun searchTrack(expression: String) : List<Track>
+    fun searchTrack(expression: String): Resource<List<Track>>
 }
