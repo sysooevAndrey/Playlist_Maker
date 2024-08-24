@@ -11,5 +11,4 @@ class TrackInteractorImpl(private val trackRepository: TrackRepository) : TrackI
             consumer.consume(trackRepository.searchTrack(expression))
         }
     }
-
 }

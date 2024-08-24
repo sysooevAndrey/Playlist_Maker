@@ -1,16 +1,14 @@
-package com.practicum.playlistmaker.presentation
+package com.practicum.playlistmaker.ui
 
-import Track
+import com.practicum.playlistmaker.domain.models.Track
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.dto.TrackSearchResponse
 
 class TrackListAdapter(private val trackList: ArrayList<Track>) :
     RecyclerView.Adapter<TrackViewHolder>() {
-
     var onItemClickListener: ((track: Track) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

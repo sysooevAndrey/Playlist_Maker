@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.data.network
+package com.practicum.playlistmaker.util
 
 enum class SearchStatus {
     SUCCESS,

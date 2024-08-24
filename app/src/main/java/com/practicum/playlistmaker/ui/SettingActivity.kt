@@ -4,32 +4,27 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.practicum.playlistmaker.button.DataIntent
-import com.practicum.playlistmaker.button.DataTransferButton
-import com.practicum.playlistmaker.button.NavigationButton
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.dto.App
+import com.practicum.playlistmaker.domain.ThemeManager
+import com.practicum.playlistmaker.util.button.DataIntent
+import com.practicum.playlistmaker.util.button.DataTransferButton
+import com.practicum.playlistmaker.util.button.NavigationButton
+import com.practicum.playlistmaker.util.App
+import com.practicum.playlistmaker.util.Creator
 
 class SettingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
-        val sharedPrefs = getSharedPreferences(App.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-
+        val themeManager: ThemeManager = Creator.getThemeManager(this)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.theme_switcher)
-
         themeSwitcher.isChecked =
-            sharedPrefs.getBoolean(App.APP_THEME_KEY, App.DARK_APP_THEME_DEFAULT)
-
+            themeManager.getData()
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
-            sharedPrefs.edit()
-                .putBoolean(App.APP_THEME_KEY, checked)
-                .apply()
+            themeManager.saveData(checked)
         }
-
         NavigationButton.back<ImageView>(
             this, R.id.back
         )

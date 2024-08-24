@@ -1,19 +1,23 @@
+package com.practicum.playlistmaker.domain.models
+
+import com.practicum.playlistmaker.data.dto.TrackDto
+import com.practicum.playlistmaker.util.Model
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 data class Track(
-    val trackId: String,
-    val trackName: String,
-    val artistName: String,
-    val trackTimeMillis: String,
-    val artworkUrl100: String,
-    val collectionName: String,
-    val releaseDate: String,
-    val primaryGenreName: String,
-    val country: String,
-    val previewUrl: String
-) {
+    override val trackId: String,
+    override val trackName: String,
+    override val artistName: String,
+    override val trackTimeMillis: String,
+    override val artworkUrl100: String,
+    override val collectionName: String,
+    override val releaseDate: String,
+    override val primaryGenreName: String,
+    override val country: String,
+    override val previewUrl: String
+) : Model {
     fun getLargeArtworkUrl(): String = artworkUrl100
         .replaceAfterLast('/', "512x512bb.jpg")
 

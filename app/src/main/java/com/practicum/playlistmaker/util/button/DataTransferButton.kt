@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.button
+package com.practicum.playlistmaker.util.button
 
 import android.content.Intent
 import android.net.Uri

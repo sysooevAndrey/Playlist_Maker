@@ -3,8 +3,8 @@ package com.practicum.playlistmaker.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.button.MaterialButton
-import com.practicum.playlistmaker.button.NavigationButton
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.util.button.NavigationButton
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
