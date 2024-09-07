@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.activity
+package com.practicum.playlistmaker.domain
 
 enum class SearchStatus {
     SUCCESS,

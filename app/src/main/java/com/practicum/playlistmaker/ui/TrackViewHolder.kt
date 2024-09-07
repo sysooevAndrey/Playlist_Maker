@@ -1,5 +1,6 @@
-package com.practicum.playlistmaker.recyclerview
+package com.practicum.playlistmaker.ui
 
+import com.practicum.playlistmaker.domain.models.Track
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -7,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.model.TrackResponse
 
 class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackName: TextView = itemView.findViewById(R.id.track_name_value)
@@ -15,7 +15,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
     private val trackImage: ImageView = itemView.findViewById(R.id.track_image)
 
-    fun bind(track: TrackResponse.Track) {
+    fun bind(track: Track) {
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = track.getCorrectTimeFormat()
