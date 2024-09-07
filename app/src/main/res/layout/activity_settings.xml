@@ -9,7 +9,7 @@
     android:background="?attr/colorOnPrimary"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/medium_padding"
-    tools:context=".ui.SettingActivity">
+    tools:context=".setting.ui.SettingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
