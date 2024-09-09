@@ -40,8 +40,6 @@ class PlayerActivity : AppCompatActivity() {
             PlayerViewModel.getViewModelFactory(track)
         )[PlayerViewModel::class.java]
 
-        lifecycle.addObserver(viewModel)
-
         viewModel.getLoadingLiveData().observe(this) { screenState ->
             when (screenState) {
                 is PlayerScreenState.Content -> {
@@ -76,6 +74,11 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.forcedPausePlayer()
+    }
+
     private fun changeContentVisibility(loading: Boolean) {
         binding.root.forEach { view -> view.isVisible = !loading }
         binding.progressCircular.isVisible = loading
@@ -96,6 +99,4 @@ class PlayerActivity : AppCompatActivity() {
             false -> binding.play.setImageResource(R.drawable.play_icon)
         }
     }
-
-
 }

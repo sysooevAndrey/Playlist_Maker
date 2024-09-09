@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.util.button.DataTransferButton
 import com.practicum.playlistmaker.util.App
 
 class SettingActivity : AppCompatActivity() {
@@ -24,20 +23,12 @@ class SettingActivity : AppCompatActivity() {
             binding.themeSwitcher.isChecked = it
             (applicationContext as App).switchTheme(it)
         }
-
-        binding.backButton.setOnClickListener { this.finish() }
-
-        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            viewModel.saveTheme(checked)
+        with(binding) {
+            backButton.setOnClickListener { this@SettingActivity.finish() }
+            themeSwitcher.setOnCheckedChangeListener { _, checked -> viewModel.saveTheme(checked) }
+            helpButton.setOnClickListener { viewModel.supportContact() }
+            linkButton.setOnClickListener { viewModel.shareApp() }
+            userAgreementButton.setOnClickListener { viewModel.openTerms() }
         }
-        DataTransferButton
-            .click(this, binding.helpButton, DataTransferButton.DataIntent.MAIL)
-        DataTransferButton
-            .click(this, binding.linkButton, DataTransferButton.DataIntent.MESSAGE)
-        DataTransferButton.click(
-            this,
-            binding.userAgreementButton,
-            DataTransferButton.DataIntent.USER_AGREEMENT
-        )
     }
 }

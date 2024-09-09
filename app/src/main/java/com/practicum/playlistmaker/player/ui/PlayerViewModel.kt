@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.player.ui
 
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +15,7 @@ import com.practicum.playlistmaker.util.Creator
 class PlayerViewModel(
     track: Track,
     private val playerInteractor: PlayerInteractor
-) : ViewModel(), DefaultLifecycleObserver {
+) : ViewModel() {
 
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
@@ -67,11 +65,6 @@ class PlayerViewModel(
         removeUpdateCallBack()
     }
 
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        forcedPausePlayer()
-    }
-
     private fun updateCurrentPositionRunnable(): Runnable {
         return object : Runnable {
             override fun run() {
@@ -96,7 +89,7 @@ class PlayerViewModel(
         removeUpdateCallBack()
     }
 
-    private fun forcedPausePlayer() {
+    fun forcedPausePlayer() {
         playerInteractor.pausePlayer()
         setPauseStatus()
     }

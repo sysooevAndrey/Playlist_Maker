@@ -104,7 +104,8 @@
             android:src="@drawable/play_icon"
             app:layout_constraintBottom_toTopOf="@id/current_time"
             app:layout_constraintEnd_toStartOf="@id/like"
-            app:layout_constraintStart_toEndOf="@id/add_media" />
+            app:layout_constraintStart_toEndOf="@id/add_media"
+            android:scaleType="fitXY"/>
 
 
         <ImageView

@@ -74,9 +74,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 is SearchScreenState.Error -> {
-                    searchItemVisibility(
-                        screenState.searchStatus
-                    )
+                    searchItemVisibility(screenState.searchStatus)
                 }
             }
         }
@@ -113,8 +111,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.clearText.isVisible = clearButtonVisibility(s)
                 searchText = s.toString()
                 historyItemVisibility(binding.searchEditText.hasFocus())
-                if (s?.isNotEmpty() == true) viewModel.search(searchText, isDebounce = true)
-                else viewModel.removeRequest()
+                viewModel.search(searchText, isDebounce = true)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -139,7 +136,9 @@ class SearchActivity : AppCompatActivity() {
             openTrackActivity(it)
         }
         historyAdapter.onItemClickListener = {
+            viewModel.addToHistory(it)
             openTrackActivity(it)
+            historyAdapter.notifyDataSetChanged()
         }
     }
 
@@ -199,6 +198,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun historyItemVisibility(hasFocus: Boolean) {
         if (hasFocus && binding.searchEditText.text.isEmpty() && tracksHistory.isNotEmpty()) {
             binding.tracksRecyclerView.adapter = historyAdapter

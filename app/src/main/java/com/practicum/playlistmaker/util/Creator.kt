@@ -18,6 +18,10 @@ import com.practicum.playlistmaker.setting.domain.impl.ThemeInteractorImpl
 import com.practicum.playlistmaker.search.domain.impl.HistoryInteractorImpl
 import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.practicum.playlistmaker.search.domain.impl.TrackInteractorImpl
+import com.practicum.playlistmaker.setting.data.SharingRepositoryImpl
+import com.practicum.playlistmaker.setting.domain.api.SharingInteractor
+import com.practicum.playlistmaker.setting.domain.api.SharingRepository
+import com.practicum.playlistmaker.setting.domain.impl.SharingInteractorImpl
 
 object Creator {
     private fun getTrackRepository(): TrackRepository {
@@ -36,6 +40,10 @@ object Creator {
         return PlayerRepositoryImpl()
     }
 
+    private fun getShareRepository(context: Context) : SharingRepository{
+        return SharingRepositoryImpl(context)
+    }
+
     fun provideTrackInteractor(): TrackInteractor {
         return TrackInteractorImpl(getTrackRepository())
     }
@@ -50,5 +58,9 @@ object Creator {
 
     fun providePlayerInteractor(): PlayerInteractor {
         return PlayerInteractorImpl(getPlayerRepository())
+    }
+
+    fun provideShareInteractor(context: Context): SharingInteractor{
+        return SharingInteractorImpl(getShareRepository(context))
     }
 }

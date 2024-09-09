@@ -32,17 +32,13 @@ class SearchViewModel(
 
         private const val SEARCH_TEXT_DEF: String = ""
         private const val SEARCH_DEBOUNCE_DELAY: Long = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
+
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
+
+    private val requestRunnable = Runnable { createRequest() }
 
     private var searchText = SEARCH_TEXT_DEF
-
-    private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
-
-    private val t = Thread {
-        Looper.prepare()
-        Looper.loop()
-    }
 
     private val searchScreenStateLiveData =
         MutableLiveData<SearchScreenState>(SearchScreenState.Wait)
@@ -60,57 +56,16 @@ class SearchViewModel(
                 }
             }
         })
-        historyLiveData.value = searchTracksHistory
-        t.start()
+        setHistory(searchTracksHistory)
     }
-
-    fun getHistoryLiveData(): LiveData<ArrayList<Track>> = historyLiveData
-    fun getSearchScreenStateLiveData(): LiveData<SearchScreenState> = searchScreenStateLiveData
 
     override fun onCleared() {
         super.onCleared()
         historyInteractor.saveHistory(searchTracksHistory)
     }
 
-    private fun searchDebounce() {
-        t.run {
-            val handler = Handler(Looper.myLooper()!!)
-            handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-            handler.postDelayed({ createRequest() }, SEARCH_REQUEST_TOKEN, SEARCH_DEBOUNCE_DELAY)
-        }
-    }
-
-    private fun createRequest() {
-        searchScreenStateLiveData.value = SearchScreenState.Loading
-        trackInteractor.searchTrack(searchText, object : TrackInteractor.TrackConsumer {
-            override fun consume(resource: Resource<List<Track>>) {
-                mainThreadHandler.post {
-                    if (resource is Resource.Success) {
-                        searchScreenStateLiveData.value = SearchScreenState.Content(resource.data!!)
-                    } else {
-                        if (resource.data != null) searchScreenStateLiveData.value =
-                            SearchScreenState.Error(SearchStatus.NOT_FOUND)
-                        else searchScreenStateLiveData.value =
-                            SearchScreenState.Error(SearchStatus.NO_NETWORK)
-                    }
-                }
-            }
-        })
-    }
-
-    fun search(request: String, isDebounce: Boolean = false) {
-        this.searchText = request
-        if (isDebounce) {
-            searchDebounce()
-        } else createRequest()
-    }
-
-    fun removeRequest() {
-        t.run {
-            val handler = Handler(Looper.myLooper()!!)
-            handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        }
-    }
+    fun getHistoryLiveData(): LiveData<ArrayList<Track>> = historyLiveData
+    fun getSearchScreenStateLiveData(): LiveData<SearchScreenState> = searchScreenStateLiveData
 
     fun addToHistory(track: Track) {
         with(searchTracksHistory) {
@@ -124,12 +79,48 @@ class SearchViewModel(
                 add(0, track)
             }
         }
-        historyLiveData.value = searchTracksHistory
+        setHistory(searchTracksHistory)
+    }
+
+    fun search(request: String, isDebounce: Boolean = false) {
+        if (request.isNotEmpty()) {
+            setState(SearchScreenState.Loading)
+            this.searchText = request
+            if (isDebounce) {
+                searchDebounce()
+            } else createRequest()
+        } else {
+            removeSearchCallback()
+            setState(SearchScreenState.Wait)
+        }
     }
 
     fun clearHistory() {
         searchTracksHistory.clear()
-        historyLiveData.value = searchTracksHistory
-        searchScreenStateLiveData.value = SearchScreenState.Wait
+        setHistory(searchTracksHistory)
+        setState(SearchScreenState.Wait)
     }
+
+    private fun createRequest() {
+        trackInteractor.searchTrack(searchText, object : TrackInteractor.TrackConsumer {
+            override fun consume(resource: Resource<List<Track>>) {
+                if (resource is Resource.Success) {
+                    setState(SearchScreenState.Content(resource.data!!))
+                } else {
+                    if (resource.data != null)
+                        setState(SearchScreenState.Error(SearchStatus.NOT_FOUND))
+                    else setState(SearchScreenState.Error(SearchStatus.NO_NETWORK))
+                }
+            }
+        })
+    }
+
+    private fun setState(state: SearchScreenState) = searchScreenStateLiveData.postValue(state)
+    private fun setHistory(value: ArrayList<Track>) = historyLiveData.postValue(value)
+    private fun searchDebounce() {
+        mainThreadHandler.removeCallbacks(requestRunnable)
+        mainThreadHandler.postDelayed(requestRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun removeSearchCallback() = mainThreadHandler.removeCallbacks(requestRunnable)
 }
