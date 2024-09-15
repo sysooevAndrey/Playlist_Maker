@@ -1,23 +1,27 @@
 package com.practicum.playlistmaker.util
 
 import android.content.Context
-import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
-import com.practicum.playlistmaker.data.network.TrackRepositoryImpl
-import com.practicum.playlistmaker.domain.api.ThemeRepository
-import com.practicum.playlistmaker.data.repository.ThemeRepositoryImpl
-import com.practicum.playlistmaker.domain.api.HistoryRepository
-import com.practicum.playlistmaker.data.repository.HistoryRepositoryImpl
-import com.practicum.playlistmaker.data.repository.PlayerRepositoryImpl
-import com.practicum.playlistmaker.domain.api.ThemeInteractor
-import com.practicum.playlistmaker.domain.api.HistoryInteractor
-import com.practicum.playlistmaker.domain.api.PlayerInteractor
-import com.practicum.playlistmaker.domain.impl.PlayerInteractorImpl
-import com.practicum.playlistmaker.domain.api.PlayerRepository
-import com.practicum.playlistmaker.domain.api.TrackInteractor
-import com.practicum.playlistmaker.domain.api.TrackRepository
-import com.practicum.playlistmaker.domain.impl.ThemeInteractorImpl
-import com.practicum.playlistmaker.domain.impl.HistoryInteractorImpl
-import com.practicum.playlistmaker.domain.impl.TrackInteractorImpl
+import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.practicum.playlistmaker.search.data.repository.TrackRepositoryImpl
+import com.practicum.playlistmaker.setting.domain.api.ThemeRepository
+import com.practicum.playlistmaker.setting.data.ThemeRepositoryImpl
+import com.practicum.playlistmaker.search.domain.api.HistoryRepository
+import com.practicum.playlistmaker.search.data.repository.HistoryRepositoryImpl
+import com.practicum.playlistmaker.player.data.PlayerRepositoryImpl
+import com.practicum.playlistmaker.setting.domain.api.ThemeInteractor
+import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerRepository
+import com.practicum.playlistmaker.search.domain.api.TrackInteractor
+import com.practicum.playlistmaker.search.domain.api.TrackRepository
+import com.practicum.playlistmaker.setting.domain.impl.ThemeInteractorImpl
+import com.practicum.playlistmaker.search.domain.impl.HistoryInteractorImpl
+import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
+import com.practicum.playlistmaker.search.domain.impl.TrackInteractorImpl
+import com.practicum.playlistmaker.setting.data.SharingRepositoryImpl
+import com.practicum.playlistmaker.setting.domain.api.SharingInteractor
+import com.practicum.playlistmaker.setting.domain.api.SharingRepository
+import com.practicum.playlistmaker.setting.domain.impl.SharingInteractorImpl
 
 object Creator {
     private fun getTrackRepository(): TrackRepository {
@@ -32,8 +36,12 @@ object Creator {
         return ThemeRepositoryImpl(context)
     }
 
-    private fun getPlayerRepository(url: String): PlayerRepository {
-        return PlayerRepositoryImpl(url)
+    private fun getPlayerRepository(): PlayerRepository {
+        return PlayerRepositoryImpl()
+    }
+
+    private fun getShareRepository(context: Context) : SharingRepository{
+        return SharingRepositoryImpl(context)
     }
 
     fun provideTrackInteractor(): TrackInteractor {
@@ -48,9 +56,11 @@ object Creator {
         return ThemeInteractorImpl(getThemeRepository(context))
     }
 
-    fun providePlayerInteractor(url: String): PlayerInteractor {
-        return PlayerInteractorImpl(getPlayerRepository(url))
+    fun providePlayerInteractor(): PlayerInteractor {
+        return PlayerInteractorImpl(getPlayerRepository())
     }
 
-
+    fun provideShareInteractor(context: Context): SharingInteractor{
+        return SharingInteractorImpl(getShareRepository(context))
+    }
 }
