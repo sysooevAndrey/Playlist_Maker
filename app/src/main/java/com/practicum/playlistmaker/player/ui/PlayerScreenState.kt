@@ -4,7 +4,11 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed class PlayerScreenState {
     object Loading : PlayerScreenState()
+    data class Error(
+        val track: Track
+    ) : PlayerScreenState()
     data class Content(
         val track: Track,
     ) : PlayerScreenState()
+
 }

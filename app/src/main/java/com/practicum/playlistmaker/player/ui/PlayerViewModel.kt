@@ -5,15 +5,11 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
-import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.util.Creator
+import com.practicum.playlistmaker.player.domain.api.SelectTrackInteractor
 
 class PlayerViewModel(
-    track: Track,
+    selectTrackInteractor: SelectTrackInteractor,
     private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
 
@@ -27,9 +23,12 @@ class PlayerViewModel(
     fun getPlayerStatusLiveData(): LiveData<PlayerStatus> = playerStatusLiveData
 
     init {
-        playerInteractor.preparePlayer(track.previewUrl, onComplete = {
-            playerScreenStateLiveData.postValue(PlayerScreenState.Content(track))
-        })
+        val track = selectTrackInteractor.getSelected()
+        playerInteractor.preparePlayer(
+            track.previewUrl,
+            onComplete = { playerScreenStateLiveData.postValue(PlayerScreenState.Content(track)) },
+            onError = { playerScreenStateLiveData.postValue(PlayerScreenState.Error(track)) }
+        )
         playerInteractor.onPlayListener(object : PlayerInteractor.InteractorObserver {
             override fun onPlay() {
                 playerStatusLiveData.value = getCurrentPlayerStatus().copy(isPlaying = true)
@@ -54,6 +53,10 @@ class PlayerViewModel(
 
     fun play() = playerInteractor.play()
 
+    fun forcedPausePlayer() {
+        playerInteractor.pausePlayer()
+        setPauseStatus()
+    }
 
     private fun getCurrentPlayerStatus(): PlayerStatus {
         return playerStatusLiveData.value ?: PlayerStatus(isPlaying = false, progress = 0)
@@ -89,19 +92,7 @@ class PlayerViewModel(
         removeUpdateCallBack()
     }
 
-    fun forcedPausePlayer() {
-        playerInteractor.pausePlayer()
-        setPauseStatus()
-    }
-
     companion object {
-        fun getViewModelFactory(track: Track): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val playerInteractor = Creator.providePlayerInteractor()
-                PlayerViewModel(track, playerInteractor)
-            }
-        }
-
         const val DELAY_TIME_MILLIS = 100L
         private val UPDATE_CURRENT_TIME_TOKEN = Any()
     }

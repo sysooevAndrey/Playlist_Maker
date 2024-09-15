@@ -5,34 +5,18 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import com.practicum.playlistmaker.player.domain.api.SelectTrackInteractor
 import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Resource
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.util.App
-import com.practicum.playlistmaker.util.Creator
+
 
 class SearchViewModel(
+    private val selectTrackInteractor: SelectTrackInteractor,
     private val trackInteractor: TrackInteractor,
     private val historyInteractor: HistoryInteractor
 ) : ViewModel() {
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val trackInteractor = Creator.provideTrackInteractor()
-                val historyInteractor =
-                    Creator.provideTrackHistoryInteractor(this[APPLICATION_KEY] as App)
-                SearchViewModel(trackInteractor, historyInteractor)
-            }
-        }
-
-        private const val SEARCH_TEXT_DEF: String = ""
-        private const val SEARCH_DEBOUNCE_DELAY: Long = 2000L
-    }
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
@@ -43,32 +27,22 @@ class SearchViewModel(
     private val searchScreenStateLiveData =
         MutableLiveData<SearchScreenState>(SearchScreenState.Wait)
 
-    private val historyLiveData = MutableLiveData<ArrayList<Track>>()
-
-    private var searchTracksHistory = ArrayList<Track>()
+    private val historyLiveData = MutableLiveData<List<Track>>()
 
     init {
         historyInteractor.getHistory(object : HistoryInteractor.TrackHistoryConsumer {
             override fun consume(trackHistoryList: List<Track>) {
-                with(searchTracksHistory) {
-                    clear()
-                    addAll(trackHistoryList)
-                }
+                setHistory(trackHistoryList)
             }
         })
-        setHistory(searchTracksHistory)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        historyInteractor.saveHistory(searchTracksHistory)
-    }
-
-    fun getHistoryLiveData(): LiveData<ArrayList<Track>> = historyLiveData
+    fun getHistoryLiveData(): LiveData<List<Track>> = historyLiveData
     fun getSearchScreenStateLiveData(): LiveData<SearchScreenState> = searchScreenStateLiveData
 
-    fun addToHistory(track: Track) {
-        with(searchTracksHistory) {
+    fun addToHistory(currentHistory: List<Track>, track: Track) {
+        val updateHistory = ArrayList(currentHistory)
+        with(updateHistory) {
             if (contains(track)) {
                 remove(track)
                 add(0, track)
@@ -79,8 +53,10 @@ class SearchViewModel(
                 add(0, track)
             }
         }
-        setHistory(searchTracksHistory)
+        setHistory(updateHistory)
     }
+
+    fun saveHistory(currentHistory: List<Track>) = historyInteractor.saveHistory(currentHistory)
 
     fun search(request: String, isDebounce: Boolean = false) {
         if (request.isNotEmpty()) {
@@ -96,10 +72,11 @@ class SearchViewModel(
     }
 
     fun clearHistory() {
-        searchTracksHistory.clear()
-        setHistory(searchTracksHistory)
+        setHistory(emptyList())
         setState(SearchScreenState.Wait)
     }
+
+    fun selectTrack(track: Track) = selectTrackInteractor.setSelected(track)
 
     private fun createRequest() {
         trackInteractor.searchTrack(searchText, object : TrackInteractor.TrackConsumer {
@@ -116,11 +93,16 @@ class SearchViewModel(
     }
 
     private fun setState(state: SearchScreenState) = searchScreenStateLiveData.postValue(state)
-    private fun setHistory(value: ArrayList<Track>) = historyLiveData.postValue(value)
+    private fun setHistory(value: List<Track>) = historyLiveData.postValue(value)
     private fun searchDebounce() {
         mainThreadHandler.removeCallbacks(requestRunnable)
         mainThreadHandler.postDelayed(requestRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun removeSearchCallback() = mainThreadHandler.removeCallbacks(requestRunnable)
+
+    companion object {
+        private const val SEARCH_TEXT_DEF: String = ""
+        private const val SEARCH_DEBOUNCE_DELAY: Long = 2000L
+    }
 }

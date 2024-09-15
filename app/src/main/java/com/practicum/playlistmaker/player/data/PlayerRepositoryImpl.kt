@@ -4,53 +4,51 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import com.practicum.playlistmaker.player.domain.api.PlayerRepository
+import java.lang.Exception
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class PlayerRepositoryImpl : PlayerRepository {
-    companion object {
-        private val CHECK_COMPLETE_TOKEN = Any()
-    }
+class PlayerRepositoryImpl : PlayerRepository, KoinComponent {
 
-    private val player = MediaPlayer()
+    private val player: MediaPlayer by inject()
 
-    private val t = Thread {
-        Looper.prepare()
-        Looper.loop()
-    }
+    private val thread : Thread by inject()
 
     init {
-        t.start()
+        thread.start()
     }
 
-    override fun preparePlayer(url: String, onComplete: () -> Unit) {
+    override fun preparePlayer(url: String, onComplete: () -> Unit, onError: () -> Unit) {
         with(player) {
-            setOnPreparedListener{onComplete.invoke()}
-            setDataSource(url)
-            prepareAsync()
+            setOnPreparedListener { onComplete.invoke() }
+            try {
+                setDataSource(url)
+                prepareAsync()
+            } catch (e: Exception) {
+                onError.invoke()
+            }
         }
     }
 
     override fun startPlayer() {
-        t.run { player.start() }
+        thread.run { player.start() }
     }
 
     override fun pausePlayer() {
-        t.run {
-            player.pause()
-            Handler(Looper.myLooper()!!).removeCallbacksAndMessages(CHECK_COMPLETE_TOKEN)
-        }
+        thread.run { player.pause() }
     }
 
     override fun releasePlayer() {
-        t.run { player.release() }
+        thread.run { player.release() }
     }
 
     override fun provideCurrentPosition(): Int {
-        return t.run { player.currentPosition }
+        return thread.run { player.currentPosition }
     }
 
     override fun onCompletionListener(onComplete: () -> Unit) {
         player.setOnCompletionListener {
-            t.run { Handler(Looper.getMainLooper()).post { onComplete.invoke() } }
+            thread.run { Handler(Looper.getMainLooper()).post { onComplete.invoke() } }
         }
     }
 }

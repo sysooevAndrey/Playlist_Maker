@@ -1,30 +1,28 @@
 package com.practicum.playlistmaker.search.data.repository
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.data.Converter
 import com.practicum.playlistmaker.search.domain.api.HistoryRepository
 import com.practicum.playlistmaker.search.domain.models.Track
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class HistoryRepositoryImpl(context: Context) : HistoryRepository {
+class HistoryRepositoryImpl(private val sharedPreferences: SharedPreferences) : HistoryRepository,
+    KoinComponent {
     companion object {
-        const val PLAYLIST_MAKER_PREFERENCES: String = "PLAYLIST_MAKER_PREFERENCES"
         const val SEARCH_HISTORY_KEY: String = "SEARCH_HISTORY"
     }
 
-    private val sharedPreferences =
-        context.getSharedPreferences(
-            PLAYLIST_MAKER_PREFERENCES,
-            Context.MODE_PRIVATE
-        )
+    private val gson : Gson by inject()
 
     override fun saveHistory(trackList: List<Track>) {
         sharedPreferences.edit()
             .putString(
                 SEARCH_HISTORY_KEY,
-                Gson().toJson(
+                gson.toJson(
                     trackList.map { Converter.convertModel(it) as TrackDto }
                 )).apply()
     }
@@ -32,7 +30,7 @@ class HistoryRepositoryImpl(context: Context) : HistoryRepository {
     override fun getHistory(): List<Track> {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
         return json?.let {
-            Gson().fromJson(json, object : TypeToken<ArrayList<Track>>() {}.type)
+            gson.fromJson(json, object : TypeToken<ArrayList<Track>>() {}.type)
         } ?: arrayListOf()
     }
 }

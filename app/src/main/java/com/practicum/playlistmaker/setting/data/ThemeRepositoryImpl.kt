@@ -3,7 +3,7 @@ package com.practicum.playlistmaker.setting.data
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.setting.domain.api.ThemeRepository
-import com.practicum.playlistmaker.util.App
+import com.practicum.playlistmaker.util.MyApplication
 
 class ThemeRepositoryImpl(context: Context) : ThemeRepository {
     companion object {
@@ -25,7 +25,7 @@ class ThemeRepositoryImpl(context: Context) : ThemeRepository {
     override fun getTheme(): Boolean {
         return sharedPreferences.getBoolean(
             APP_THEME_KEY,
-            App.DARK_APP_THEME_DEFAULT
+            MyApplication.DARK_APP_THEME_DEFAULT
         )
     }
 }
