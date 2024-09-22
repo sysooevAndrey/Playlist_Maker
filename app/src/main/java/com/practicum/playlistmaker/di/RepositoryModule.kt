@@ -16,10 +16,10 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<HistoryRepository> { HistoryRepositoryImpl(get()) }
+    single<HistoryRepository> { HistoryRepositoryImpl(get(), get()) }
     single<TrackRepository> { TrackRepositoryImpl(get()) }
-    factory<PlayerRepository> { PlayerRepositoryImpl() }
+    factory<PlayerRepository> { PlayerRepositoryImpl(get()) }
     single<SharingRepository> { SharingRepositoryImpl(androidContext()) }
-    single<ThemeRepository> { ThemeRepositoryImpl(androidContext()) }
-    single<SelectTrackRepository>{ SelectedTrackRepositoryImpl(get()) }
+    single<ThemeRepository> { ThemeRepositoryImpl(get()) }
+    single<SelectTrackRepository> { SelectedTrackRepositoryImpl(get(), get()) }
 }

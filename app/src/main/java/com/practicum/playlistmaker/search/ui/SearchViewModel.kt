@@ -40,23 +40,18 @@ class SearchViewModel(
     fun getHistoryLiveData(): LiveData<List<Track>> = historyLiveData
     fun getSearchScreenStateLiveData(): LiveData<SearchScreenState> = searchScreenStateLiveData
 
-    fun addToHistory(currentHistory: List<Track>, track: Track) {
-        val updateHistory = ArrayList(currentHistory)
-        with(updateHistory) {
-            if (contains(track)) {
-                remove(track)
-                add(0, track)
-            } else if (size == 10) {
-                removeLast()
-                add(0, track)
-            } else {
-                add(0, track)
-            }
-        }
-        setHistory(updateHistory)
+    fun addToHistory(track: Track) {
+        val currentHistory = historyLiveData.value.orEmpty()
+        val updateHistory =
+            if (currentHistory.contains(track)) currentHistory.sortedBy { it != track }
+            else ArrayList(currentHistory).apply { add(0, track) }
+        setHistory(updateHistory.apply { take(10) })
     }
 
-    fun saveHistory(currentHistory: List<Track>) = historyInteractor.saveHistory(currentHistory)
+    fun saveHistory() {
+        super.onCleared()
+        historyInteractor.saveHistory(historyLiveData.value.orEmpty())
+    }
 
     fun search(request: String, isDebounce: Boolean = false) {
         if (request.isNotEmpty()) {
@@ -101,8 +96,8 @@ class SearchViewModel(
 
     private fun removeSearchCallback() = mainThreadHandler.removeCallbacks(requestRunnable)
 
-    companion object {
-        private const val SEARCH_TEXT_DEF: String = ""
-        private const val SEARCH_DEBOUNCE_DELAY: Long = 2000L
+    private companion object {
+        const val SEARCH_TEXT_DEF: String = ""
+        const val SEARCH_DEBOUNCE_DELAY: Long = 2000L
     }
 }

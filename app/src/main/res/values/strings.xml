@@ -27,4 +27,5 @@
     <string name="collection_title">Альбом</string>
     <string name="genre_title">Жанр</string>
     <string name="country_title">Страна</string>
+    <string name="unavailable_track_text">Ошибка. Трек недоступен</string>
 </resources>

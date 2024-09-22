@@ -40,7 +40,7 @@ class PlayerActivity : AppCompatActivity() {
                     changeContentVisibility(loading = false, isError = true)
                     renderFields(screenState.track)
                     Toast
-                        .makeText(this, "Ошибка. Трек недоступен", Toast.LENGTH_LONG)
+                        .makeText(this, R.string.unavailable_track_text, Toast.LENGTH_SHORT)
                         .show()
                 }
 

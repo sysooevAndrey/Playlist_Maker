@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
 import com.google.gson.Gson
 import com.practicum.playlistmaker.search.data.network.ITunesService
 import com.practicum.playlistmaker.search.data.network.NetworkClient
@@ -23,7 +24,10 @@ val dataModule = module {
             .build()
             .create(ITunesService::class.java)
     }
-    single<NetworkClient> { RetrofitNetworkClient(androidContext(), get()) }
+    single<NetworkClient> { RetrofitNetworkClient(
+        get(),
+        get()
+    ) }
     single<SharedPreferences> {
         androidContext().getSharedPreferences(
             PLAYLIST_MAKER_PREFERENCES,
@@ -32,5 +36,5 @@ val dataModule = module {
     }
     factory { Gson() }
     factory { MediaPlayer() }
-    factory { Thread() }
+    single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
 }

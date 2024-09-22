@@ -1,25 +1,25 @@
 package com.practicum.playlistmaker.player.data
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.player.domain.api.SelectTrackRepository
 import com.practicum.playlistmaker.search.domain.models.Track
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class SelectedTrackRepositoryImpl(private val sharedPreferences: SharedPreferences) :
-    SelectTrackRepository, KoinComponent {
-    companion object {
+class SelectedTrackRepositoryImpl(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+) :
+    SelectTrackRepository {
+    private companion object {
         const val SELECTED_TRACK_KEY = "SELECTED_TRACK"
     }
 
-    private val gson: Gson by inject()
-
     override fun setSelected(track: Track) {
-        sharedPreferences
-            .edit()
-            .putString(SELECTED_TRACK_KEY, gson.toJson(track)).apply()
+        sharedPreferences.edit {
+            putString(SELECTED_TRACK_KEY, gson.toJson(track))
+        }
     }
 
     override fun getSelected(): Track {

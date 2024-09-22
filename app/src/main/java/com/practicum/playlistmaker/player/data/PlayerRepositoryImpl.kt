@@ -5,21 +5,17 @@ import android.os.Handler
 import android.os.Looper
 import com.practicum.playlistmaker.player.domain.api.PlayerRepository
 import java.lang.Exception
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class PlayerRepositoryImpl : PlayerRepository, KoinComponent {
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerRepository {
 
-    private val player: MediaPlayer by inject()
-
-    private val thread : Thread by inject()
+    private val thread : Thread = Thread()
 
     init {
         thread.start()
     }
 
     override fun preparePlayer(url: String, onComplete: () -> Unit, onError: () -> Unit) {
-        with(player) {
+        with(mediaPlayer) {
             setOnPreparedListener { onComplete.invoke() }
             try {
                 setDataSource(url)
@@ -31,23 +27,23 @@ class PlayerRepositoryImpl : PlayerRepository, KoinComponent {
     }
 
     override fun startPlayer() {
-        thread.run { player.start() }
+        thread.run { mediaPlayer.start() }
     }
 
     override fun pausePlayer() {
-        thread.run { player.pause() }
+        thread.run { mediaPlayer.pause() }
     }
 
     override fun releasePlayer() {
-        thread.run { player.release() }
+        thread.run { mediaPlayer.release() }
     }
 
     override fun provideCurrentPosition(): Int {
-        return thread.run { player.currentPosition }
+        return thread.run { mediaPlayer.currentPosition }
     }
 
     override fun onCompletionListener(onComplete: () -> Unit) {
-        player.setOnCompletionListener {
+        mediaPlayer.setOnCompletionListener {
             thread.run { Handler(Looper.getMainLooper()).post { onComplete.invoke() } }
         }
     }
