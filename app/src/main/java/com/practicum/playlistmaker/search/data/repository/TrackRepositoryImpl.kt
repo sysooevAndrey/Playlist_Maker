@@ -16,17 +16,17 @@ class TrackRepositoryImpl(
     override fun searchTrack(expression: String): Resource<List<Track>> {
         val resp = networkClient.doRequest(TrackSearchRequest(expression))
         return when (resp.resultCode) {
-            -1, 400 -> Resource.Error()
+            -1, 400 -> Resource.Error.NoNetwork()
             else -> {
                 try {
                     val result = (resp as TrackSearchResponse).results
                     if (result.isNotEmpty()) {
                         Resource.Success(result.map { Converter.convertModel(it) as Track })
                     } else {
-                        Resource.Error(emptyList())
+                        Resource.Error.NotFound()
                     }
-                } catch (e: Exception) {
-                    Resource.Error()
+                } catch (e1: Exception) {
+                    Resource.Error.ClientError()
                 }
             }
         }

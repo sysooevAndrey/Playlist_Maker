@@ -17,11 +17,11 @@ class HistoryRepositoryImpl(
         const val SEARCH_HISTORY_KEY: String = "SEARCH_HISTORY"
     }
 
-    override fun saveHistory(trackList: List<Track>) {
+    override fun saveHistory(tracks: List<Track>) {
         sharedPreferences.edit {
             putString(
                 SEARCH_HISTORY_KEY,
-                gson.toJson(trackList.map { Converter.convertModel(it) as TrackDto })
+                gson.toJson(tracks.map { Converter.convertModel(it) as TrackDto })
             )
         }
     }

@@ -6,6 +6,7 @@ sealed class SearchScreenState {
 
     object Wait : SearchScreenState()
     object Loading : SearchScreenState()
+    data class History(val tracks: List<Track>) : SearchScreenState()
     data class Content(val tracks: List<Track>) : SearchScreenState()
-    data class Error(val searchStatus: SearchStatus) : SearchScreenState()
+    data class Error(val searchScreenStatus: SearchScreenStatus) : SearchScreenState()
 }

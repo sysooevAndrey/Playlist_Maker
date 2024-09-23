@@ -34,66 +34,53 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.getHistoryLiveData()
-            .observe(this) { tracks ->
-                historyAdapter.submitList(tracks)
-            }
-
         viewModel.getSearchScreenStateLiveData().observe(this) { screenState ->
             when (screenState) {
 
                 is SearchScreenState.Wait -> {
-                    searchItemVisibility(SearchStatus.WAIT)
-                    historyItemVisibility()
+                    searchAdapter.submitList(emptyList())
+                    itemVisibility(SearchScreenStatus.WAIT)
                 }
 
                 is SearchScreenState.Loading -> {
-                    searchItemVisibility(SearchStatus.LOADING)
-                    historyItemVisibility()
+                    itemVisibility(SearchScreenStatus.LOADING)
+                }
+
+                is SearchScreenState.History -> {
+                    historyAdapter.submitList(screenState.tracks)
+                    itemVisibility(SearchScreenStatus.HISTORY)
                 }
 
                 is SearchScreenState.Content -> {
                     searchAdapter.submitList(screenState.tracks)
-                    searchItemVisibility(SearchStatus.SUCCESS)
-                    historyItemVisibility()
-
+                    itemVisibility(SearchScreenStatus.SUCCESS)
                 }
 
                 is SearchScreenState.Error -> {
-                    searchItemVisibility(screenState.searchStatus)
-                    historyItemVisibility()
+                    itemVisibility(screenState.searchScreenStatus)
                 }
-
             }
         }
         with(binding) {
             backButton.setOnClickListener {
                 this@SearchActivity.finish()
             }
-            searchEditText.setText(searchText)
-            searchEditText.setOnFocusChangeListener { _, _ -> historyItemVisibility() }
             updateButton.setOnClickListener {
                 viewModel.search(searchText)
             }
             clearText.setOnClickListener {
                 searchEditText.setText(SEARCH_TEXT_DEF)
-                searchAdapter.submitList(emptyList())
-                historyItemVisibility()
+                viewModel.showHistory()
                 val inputMethodManager =
                     getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager
                     ?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             }
-
+            searchEditText.setText(searchText)
+            searchEditText.setOnFocusChangeListener { _, _ -> viewModel.showHistory() }
             val searchEditTextWatcher = object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
+                override fun afterTextChanged(s: Editable?) {}
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -102,11 +89,7 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     clearText.isVisible = clearButtonVisibility(s)
                     searchText = s.toString()
-                    historyItemVisibility()
                     viewModel.search(searchText, isDebounce = true)
-                }
-
-                override fun afterTextChanged(s: Editable?) {
                 }
             }
             searchEditText.addTextChangedListener(searchEditTextWatcher)
@@ -118,35 +101,27 @@ class SearchActivity : AppCompatActivity() {
             }
             clearHistoryButton.setOnClickListener {
                 viewModel.clearHistory()
+                viewModel.showHistory()
             }
         }
 
         searchAdapter.onItemClickListener = {
-            addToHistory(it)
+            viewModel.addToHistory(it)
             openPlayerActivity(it)
         }
         historyAdapter.onItemClickListener = {
-            addToHistory(it)
+            viewModel.addToHistory(it)
             openPlayerActivity(it)
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.saveHistory()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.saveHistory()
+    override fun onResume() {
+        super.onResume()
+        viewModel.showHistory(isHistoryState = binding.tracksRecyclerView.adapter == historyAdapter)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
         return !s.isNullOrEmpty()
-    }
-
-    private fun addToHistory(track: Track) {
-        viewModel.addToHistory(track)
     }
 
     private fun openPlayerActivity(track: Track) {
@@ -156,74 +131,92 @@ class SearchActivity : AppCompatActivity() {
         )
     }
 
-    private fun searchItemVisibility(searchStatus: SearchStatus) {
-        when (searchStatus) {
-            SearchStatus.WAIT -> {
+    private fun itemVisibility(searchScreenStatus: SearchScreenStatus) {
+        when (searchScreenStatus) {
+            SearchScreenStatus.WAIT -> {
                 with(binding) {
                     progressCircular.isVisible = false
-                    tracksRecyclerView.isVisible = true
+                    tracksRecyclerView.isVisible = false
                     placeholderView.isVisible = false
                     updateButton.isVisible = false
+                    historyItemVisibility(isVisible = false)
                 }
             }
 
-            SearchStatus.LOADING -> {
+            SearchScreenStatus.LOADING -> {
                 with(binding) {
                     progressCircular.isVisible = true
                     tracksRecyclerView.isVisible = false
                     placeholderView.isVisible = false
                     updateButton.isVisible = false
+                    historyItemVisibility(isVisible = false)
                 }
             }
 
-            SearchStatus.SUCCESS -> {
+            SearchScreenStatus.SUCCESS -> {
                 with(binding) {
+                    tracksRecyclerView.adapter = searchAdapter
                     progressCircular.isVisible = false
                     tracksRecyclerView.isVisible = true
                     placeholderView.isVisible = false
                     updateButton.isVisible = false
+                    historyItemVisibility(isVisible = false)
                 }
             }
 
-            SearchStatus.NOT_FOUND -> {
+            SearchScreenStatus.HISTORY -> {
+                with(binding) {
+                    tracksRecyclerView.adapter = historyAdapter
+                    progressCircular.isVisible = false
+                    tracksRecyclerView.isVisible = true
+                    placeholderView.isVisible = false
+                    updateButton.isVisible = false
+                    historyItemVisibility(isVisible = true)
+                }
+            }
+
+            SearchScreenStatus.NOT_FOUND -> {
                 with(binding) {
                     progressCircular.isVisible = false
                     tracksRecyclerView.isVisible = false
                     placeholderView.isVisible = true
                     updateButton.isVisible = false
+                    historyItemVisibility(isVisible = false)
                     placeholderImage.setImageResource(R.drawable.placeholder_empty)
                     placeholderText.setText(R.string.empty_text)
                 }
             }
 
-            SearchStatus.NO_NETWORK -> {
+            SearchScreenStatus.NO_NETWORK -> {
                 with(binding) {
                     progressCircular.isVisible = false
                     tracksRecyclerView.isVisible = false
                     placeholderView.isVisible = true
                     updateButton.isVisible = true
+                    historyItemVisibility(isVisible = false)
                     placeholderImage.setImageResource(R.drawable.placeholder_network)
                     placeholderText.setText(R.string.network_error_text)
+                }
+            }
+
+            SearchScreenStatus.CLIENT_ERROR -> {
+                with(binding) {
+                    progressCircular.isVisible = false
+                    tracksRecyclerView.isVisible = false
+                    placeholderView.isVisible = true
+                    updateButton.isVisible = true
+                    historyItemVisibility(isVisible = false)
+                    placeholderImage.setImageResource(R.drawable.placeholder_empty)
+                    placeholderText.setText(R.string.client_error_text)
                 }
             }
         }
     }
 
-    private fun historyItemVisibility() {
+    private fun historyItemVisibility(isVisible: Boolean) {
         with(binding) {
-            if (
-                searchEditText.hasFocus()
-                && searchEditText.text.isEmpty()
-                && historyAdapter.currentList.isNotEmpty()
-            ) {
-                tracksRecyclerView.adapter = historyAdapter
-                clearHistoryButton.isVisible = true
-                searchHistoryHeader.isVisible = true
-            } else {
-                tracksRecyclerView.adapter = searchAdapter
-                clearHistoryButton.isVisible = false
-                searchHistoryHeader.isVisible = false
-            }
+            clearHistoryButton.isVisible = isVisible
+            searchHistoryHeader.isVisible = isVisible
         }
     }
 }

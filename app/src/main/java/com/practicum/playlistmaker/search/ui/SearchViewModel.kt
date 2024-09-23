@@ -11,7 +11,6 @@ import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Resource
 import com.practicum.playlistmaker.search.domain.models.Track
 
-
 class SearchViewModel(
     private val selectTrackInteractor: SelectTrackInteractor,
     private val trackInteractor: TrackInteractor,
@@ -27,30 +26,19 @@ class SearchViewModel(
     private val searchScreenStateLiveData =
         MutableLiveData<SearchScreenState>(SearchScreenState.Wait)
 
-    private val historyLiveData = MutableLiveData<List<Track>>()
-
-    init {
-        historyInteractor.getHistory(object : HistoryInteractor.TrackHistoryConsumer {
-            override fun consume(trackHistoryList: List<Track>) {
-                setHistory(trackHistoryList)
-            }
-        })
-    }
-
-    fun getHistoryLiveData(): LiveData<List<Track>> = historyLiveData
     fun getSearchScreenStateLiveData(): LiveData<SearchScreenState> = searchScreenStateLiveData
 
     fun addToHistory(track: Track) {
-        val currentHistory = historyLiveData.value.orEmpty()
-        val updateHistory =
-            if (currentHistory.contains(track)) currentHistory.sortedBy { it != track }
-            else ArrayList(currentHistory).apply { add(0, track) }
-        setHistory(updateHistory.apply { take(10) })
-    }
-
-    fun saveHistory() {
-        super.onCleared()
-        historyInteractor.saveHistory(historyLiveData.value.orEmpty())
+        var updHistory = emptyList<Track>()
+        historyInteractor.getHistory(object : HistoryInteractor.TrackHistoryConsumer {
+            override fun consume(tracksHistory: List<Track>) {
+                val prevHistory = ArrayList(tracksHistory)
+                updHistory =
+                    if (prevHistory.contains(track)) prevHistory.apply { sortBy { it != track } }
+                    else prevHistory.apply { add(0, track) }
+            }
+        })
+        historyInteractor.saveHistory(updHistory)
     }
 
     fun search(request: String, isDebounce: Boolean = false) {
@@ -62,13 +50,25 @@ class SearchViewModel(
             } else createRequest()
         } else {
             removeSearchCallback()
-            setState(SearchScreenState.Wait)
+            showHistory()
         }
     }
 
     fun clearHistory() {
-        setHistory(emptyList())
-        setState(SearchScreenState.Wait)
+        historyInteractor.clearHistory()
+    }
+
+    fun showHistory(isHistoryState: Boolean = true) {
+        if (isHistoryState) {
+            historyInteractor.getHistory(object : HistoryInteractor.TrackHistoryConsumer {
+                override fun consume(tracksHistory: List<Track>) {
+                    setState(
+                        if (tracksHistory.isNotEmpty()) SearchScreenState.History(tracksHistory)
+                        else SearchScreenState.Wait
+                    )
+                }
+            })
+        }
     }
 
     fun selectTrack(track: Track) = selectTrackInteractor.setSelected(track)
@@ -76,19 +76,25 @@ class SearchViewModel(
     private fun createRequest() {
         trackInteractor.searchTrack(searchText, object : TrackInteractor.TrackConsumer {
             override fun consume(resource: Resource<List<Track>>) {
-                if (resource is Resource.Success) {
-                    setState(SearchScreenState.Content(resource.data!!))
-                } else {
-                    if (resource.data != null)
-                        setState(SearchScreenState.Error(SearchStatus.NOT_FOUND))
-                    else setState(SearchScreenState.Error(SearchStatus.NO_NETWORK))
+                when (resource) {
+                    is Resource.Error.ClientError ->
+                        setState(SearchScreenState.Error(SearchScreenStatus.CLIENT_ERROR))
+
+                    is Resource.Error.NoNetwork ->
+                        setState(SearchScreenState.Error(SearchScreenStatus.NO_NETWORK))
+
+                    is Resource.Error.NotFound ->
+                        setState(SearchScreenState.Error(SearchScreenStatus.NOT_FOUND))
+
+                    is Resource.Success ->
+                        setState(SearchScreenState.Content(resource.data!!))
                 }
             }
         })
     }
 
     private fun setState(state: SearchScreenState) = searchScreenStateLiveData.postValue(state)
-    private fun setHistory(value: List<Track>) = historyLiveData.postValue(value)
+
     private fun searchDebounce() {
         mainThreadHandler.removeCallbacks(requestRunnable)
         mainThreadHandler.postDelayed(requestRunnable, SEARCH_DEBOUNCE_DELAY)
