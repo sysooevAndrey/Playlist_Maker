@@ -4,53 +4,47 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import com.practicum.playlistmaker.player.domain.api.PlayerRepository
+import java.lang.Exception
 
-class PlayerRepositoryImpl : PlayerRepository {
-    companion object {
-        private val CHECK_COMPLETE_TOKEN = Any()
-    }
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerRepository {
 
-    private val player = MediaPlayer()
-
-    private val t = Thread {
-        Looper.prepare()
-        Looper.loop()
-    }
+    private val thread : Thread = Thread()
 
     init {
-        t.start()
+        thread.start()
     }
 
-    override fun preparePlayer(url: String, onComplete: () -> Unit) {
-        with(player) {
-            setOnPreparedListener{onComplete.invoke()}
-            setDataSource(url)
-            prepareAsync()
+    override fun preparePlayer(url: String, onComplete: () -> Unit, onError: () -> Unit) {
+        with(mediaPlayer) {
+            setOnPreparedListener { onComplete.invoke() }
+            try {
+                setDataSource(url)
+                prepareAsync()
+            } catch (e: Exception) {
+                onError.invoke()
+            }
         }
     }
 
     override fun startPlayer() {
-        t.run { player.start() }
+        thread.run { mediaPlayer.start() }
     }
 
     override fun pausePlayer() {
-        t.run {
-            player.pause()
-            Handler(Looper.myLooper()!!).removeCallbacksAndMessages(CHECK_COMPLETE_TOKEN)
-        }
+        thread.run { mediaPlayer.pause() }
     }
 
     override fun releasePlayer() {
-        t.run { player.release() }
+        thread.run { mediaPlayer.release() }
     }
 
     override fun provideCurrentPosition(): Int {
-        return t.run { player.currentPosition }
+        return thread.run { mediaPlayer.currentPosition }
     }
 
     override fun onCompletionListener(onComplete: () -> Unit) {
-        player.setOnCompletionListener {
-            t.run { Handler(Looper.getMainLooper()).post { onComplete.invoke() } }
+        mediaPlayer.setOnCompletionListener {
+            thread.run { Handler(Looper.getMainLooper()).post { onComplete.invoke() } }
         }
     }
 }

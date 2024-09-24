@@ -4,11 +4,11 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.practicum.playlistmaker.R
 
-class TrackListAdapter(private val trackList: ArrayList<Track>) :
-    RecyclerView.Adapter<TrackViewHolder>() {
+class TracksAdapter : ListAdapter<Track, TrackViewHolder>(TrackDiffCallback) {
+
     var onItemClickListener: ((track: Track) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
@@ -19,11 +19,11 @@ class TrackListAdapter(private val trackList: ArrayList<Track>) :
         return TrackViewHolder(view)
     }
 
-    override fun getItemCount() = trackList.size
+    override fun getItemCount() = currentList.size
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        val track = trackList[position]
+        val track = currentList[position]
         with(holder) {
             bind(track)
             itemView.setOnClickListener {

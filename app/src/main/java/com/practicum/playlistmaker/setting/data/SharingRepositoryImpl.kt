@@ -18,16 +18,12 @@ class SharingRepositoryImpl(private val context: Context) : SharingRepository {
 
     private fun createIntent(dataIntent: DataIntent) {
         val displayIntent = Intent(dataIntent.action)
-        setIntentParams(context, displayIntent, dataIntent)
-        putIntentExtra(context, displayIntent, dataIntent)
-        startIntentActivity(context, displayIntent, dataIntent)
+        setIntentParams(displayIntent, dataIntent)
+        putIntentExtra(displayIntent, dataIntent)
+        startIntentActivity(displayIntent, dataIntent)
     }
 
-    private fun setIntentParams(
-        context: Context,
-        intent: Intent,
-        dataIntent: DataIntent
-    ) {
+    private fun setIntentParams(intent: Intent, dataIntent: DataIntent) {
         with(intent) {
             for ((key, value) in dataIntent.params) {
                 when (key) {
@@ -41,11 +37,7 @@ class SharingRepositoryImpl(private val context: Context) : SharingRepository {
         }
     }
 
-    private fun putIntentExtra(
-        context: Context,
-        intent: Intent,
-        dataIntent: DataIntent
-    ) {
+    private fun putIntentExtra(intent: Intent, dataIntent: DataIntent) {
         with(intent) {
             for ((key, value) in dataIntent.extra) {
                 val extraValue =
@@ -61,11 +53,7 @@ class SharingRepositoryImpl(private val context: Context) : SharingRepository {
         }
     }
 
-    private fun startIntentActivity(
-        context: Context,
-        intent: Intent,
-        dataIntent: DataIntent
-    ) {
+    private fun startIntentActivity(intent: Intent, dataIntent: DataIntent) {
         intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
         when (dataIntent) {
             DataIntent.MESSAGE -> {

@@ -7,12 +7,16 @@ import com.practicum.playlistmaker.search.domain.models.Track
 class HistoryInteractorImpl(private val historyRepository: HistoryRepository) :
     HistoryInteractor {
 
-    override fun saveHistory(trackList: List<Track>) {
-        historyRepository.saveHistory(trackList)
+    override fun saveHistory(tracks: List<Track>) {
+        historyRepository.saveHistory(tracks)
     }
 
     override fun getHistory(consumer: HistoryInteractor.TrackHistoryConsumer) {
-        val trackHistoryList = historyRepository.getHistory()
-        consumer.consume(trackHistoryList)
+        val tracksHistory = historyRepository.getHistory()
+        consumer.consume(tracksHistory)
     }
-   }
+
+    override fun clearHistory() {
+        historyRepository.saveHistory(emptyList())
+    }
+}

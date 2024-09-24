@@ -14,8 +14,8 @@ class PlayerInteractorImpl(private val playerRepository: PlayerRepository) : Pla
 
     private var playerState = STATE_DEFAULT
 
-    override fun preparePlayer(url: String, onComplete: () -> Unit) =
-        playerRepository.preparePlayer(url, onComplete)
+    override fun preparePlayer(url: String, onComplete: () -> Unit, onError: () -> Unit) =
+        playerRepository.preparePlayer(url, onComplete, onError)
 
     override fun startPlayer() {
         playerState = STATE_PLAYING
@@ -29,7 +29,10 @@ class PlayerInteractorImpl(private val playerRepository: PlayerRepository) : Pla
         observer.onPause()
     }
 
-    override fun releasePlayer() = playerRepository.releasePlayer()
+    override fun releasePlayer() {
+        playerState = STATE_DEFAULT
+        playerRepository.releasePlayer()
+    }
 
     override fun provideCurrentPosition(): Int = playerRepository.provideCurrentPosition()
 
