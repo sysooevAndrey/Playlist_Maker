@@ -7,8 +7,7 @@ import com.practicum.playlistmaker.search.data.Converter
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
 import com.practicum.playlistmaker.search.domain.models.Resource
-import java.io.IOException
-import java.lang.ClassCastException
+import java.lang.Exception
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -17,16 +16,19 @@ class TrackRepositoryImpl(
     override fun searchTrack(expression: String): Resource<List<Track>> {
         return try {
             val resp = networkClient.doRequest(TrackSearchRequest(expression))
-            val result = (resp as TrackSearchResponse).results
-            if (result.isNotEmpty()) {
-                Resource.Success(result.map { Converter.convertModel(it) as Track })
-            } else {
-                Resource.Error(emptyList())
+            when (resp.resultCode) {
+                -1, 400 -> Resource.Error.NoNetwork()
+                else -> {
+                    val result = (resp as TrackSearchResponse).results
+                    if (result.isNotEmpty()) {
+                        Resource.Success(result.map { Converter.convertModel(it) as Track })
+                    } else {
+                        Resource.Error.NotFound()
+                    }
+                }
             }
-        } catch (e: IOException) {
-            Resource.Error()
-        } catch (e: ClassCastException) {
-            Resource.Error()
+        } catch (e1: Exception) {
+            Resource.Error.ClientError()
         }
     }
 }

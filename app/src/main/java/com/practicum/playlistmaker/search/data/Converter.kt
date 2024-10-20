@@ -26,16 +26,16 @@ object Converter {
             is TrackDto -> {
                 with(model) {
                     Track(
-                        trackId,
-                        trackName,
-                        artistName,
-                        trackTimeMillis,
-                        artworkUrl100,
-                        collectionName,
-                        releaseDate,
-                        primaryGenreName,
-                        country,
-                        previewUrl
+                        trackId.orEmpty(),
+                        trackName.orEmpty(),
+                        artistName.orEmpty(),
+                        trackTimeMillis.orEmpty(),
+                        artworkUrl100.orEmpty(),
+                        collectionName.orEmpty(),
+                        releaseDate.orEmpty(),
+                        primaryGenreName.orEmpty(),
+                        country.orEmpty(),
+                        previewUrl.orEmpty()
                     )
                 }
             }

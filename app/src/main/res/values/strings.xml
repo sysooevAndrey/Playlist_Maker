@@ -18,6 +18,7 @@
     <string name="title_message">share to:</string>
     <string name="title_mail">send to:</string>
     <string name="network_error_text">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="client_error_text">Что-то пошло не так</string>
     <string name="update_text">Обновить</string>
     <string name="empty_text">Ничего не нашлось</string>
     <string name="clear_history_text">Очистить историю</string>
@@ -27,4 +28,5 @@
     <string name="collection_title">Альбом</string>
     <string name="genre_title">Жанр</string>
     <string name="country_title">Страна</string>
+    <string name="unavailable_track_text">Ошибка. Трек недоступен</string>
 </resources>
