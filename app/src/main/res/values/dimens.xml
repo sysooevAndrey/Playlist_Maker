@@ -10,6 +10,7 @@
     <dimen name="large_text_size">20sp</dimen>
     <dimen name="headers_text_size">26sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
+    <dimen name="fragment_padding">46dp</dimen>
     <dimen name="track_icon_padding">18dp</dimen>
     <integer name="header_font_weight">500</integer>
     <integer name="text_font_weight">400</integer>
