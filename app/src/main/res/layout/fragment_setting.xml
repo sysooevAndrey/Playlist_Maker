@@ -9,21 +9,13 @@
     android:background="?attr/colorOnPrimary"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/medium_padding"
-    tools:context=".setting.ui.SettingActivity">
+    tools:context=".setting.ui.SettingFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/back_icon"
-            tools:ignore="ContentDescription" />
 
         <TextView
             style="@style/HeaderTextStyle"

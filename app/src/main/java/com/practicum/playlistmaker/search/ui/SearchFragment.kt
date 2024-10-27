@@ -5,36 +5,42 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.PlayerActivity
+import com.practicum.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
     companion object {
         private const val SEARCH_TEXT_DEF: String = ""
     }
 
     private val viewModel: SearchViewModel by viewModel()
-
-    private lateinit var binding: ActivitySearchBinding
-
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private var searchText: String = SEARCH_TEXT_DEF
     private val searchAdapter: TracksAdapter = TracksAdapter()
     private val historyAdapter: TracksAdapter = TracksAdapter()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        viewModel.getSearchScreenStateLiveData().observe(this) { screenState ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getSearchScreenStateLiveData().observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
 
                 is SearchScreenState.Wait -> {
@@ -62,9 +68,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         with(binding) {
-            backButton.setOnClickListener {
-                this@SearchActivity.finish()
-            }
             updateButton.setOnClickListener {
                 viewModel.search(searchText)
             }
@@ -72,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
                 searchEditText.setText(SEARCH_TEXT_DEF)
                 viewModel.showHistory()
                 val inputMethodManager =
-                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager
                     ?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             }
@@ -127,7 +130,7 @@ class SearchActivity : AppCompatActivity() {
     private fun openPlayerActivity(track: Track) {
         viewModel.selectTrack(track)
         this.startActivity(
-            Intent(this, PlayerActivity::class.java)
+            Intent(requireContext(), PlayerActivity::class.java)
         )
     }
 
